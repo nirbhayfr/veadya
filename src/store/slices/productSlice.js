@@ -27,7 +27,7 @@ const initialState = {
 		{
 			id: 3,
 			tag: "Capsule",
-			name: "Calmvita+",
+			name: "Calmiva+",
 			price: 599,
 			image: "/p-3.png",
 			category: "Capsule",
