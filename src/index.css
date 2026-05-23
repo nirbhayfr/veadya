@@ -275,8 +275,10 @@ h6 {
   height: 100%;
   object-fit: cover;
   object-position: center center;
+  /* keeps subject in frame on all sizes */
   transform: scale(1);
   transition: transform 7000ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform;
 }
 
 .swiper-slide-active .hero-bg-img {
@@ -291,15 +293,14 @@ h6 {
   position: absolute;
   inset: 0;
   z-index: 2;
-  background:
-    linear-gradient(90deg,
-      rgba(11, 26, 20, 0.88) 0%,
-      rgba(17, 66, 50, 0.55) 42%,
-      rgba(11, 26, 20, 0.18) 100%);
+  background: linear-gradient(90deg,
+      rgba(11, 26, 20, 0.90) 0%,
+      rgba(17, 66, 50, 0.55) 44%,
+      rgba(11, 26, 20, 0.15) 100%);
 }
 
 /* =========================================================
-   CONTENT
+   CONTENT WRAPPER
 ========================================================= */
 
 .hero-content-wrapper {
@@ -311,18 +312,64 @@ h6 {
   align-items: center;
 }
 
+/* =========================================================
+   TEXT CONTENT + ENTRY ANIMATION
+========================================================= */
+
 .hero-content {
   width: 100%;
   max-width: 1440px;
   margin: 0 auto;
   padding: 0 100px;
-  position: relative;
-  z-index: 6;
   color: #ffffff;
 }
 
+/* Reset all animatable children */
+.hero-content .hero-tag,
+.hero-content .hero-title,
+.hero-content .hero-subtitle,
+.hero-content .hero-description,
+.hero-content .hero-buttons {
+  opacity: 0;
+  transform: translateY(22px);
+  transition:
+    opacity 0.65s ease,
+    transform 0.65s ease;
+}
+
+/* Staggered entrance when slide becomes active */
+.hero-content.is-active .hero-tag {
+  opacity: 1;
+  transform: none;
+  transition-delay: 0.05s;
+}
+
+.hero-content.is-active .hero-title {
+  opacity: 1;
+  transform: none;
+  transition-delay: 0.18s;
+}
+
+.hero-content.is-active .hero-subtitle {
+  opacity: 1;
+  transform: none;
+  transition-delay: 0.30s;
+}
+
+.hero-content.is-active .hero-description {
+  opacity: 1;
+  transform: none;
+  transition-delay: 0.42s;
+}
+
+.hero-content.is-active .hero-buttons {
+  opacity: 1;
+  transform: none;
+  transition-delay: 0.54s;
+}
+
 /* =========================================================
-   TEXT
+   TYPOGRAPHY
 ========================================================= */
 
 .hero-tag {
@@ -354,11 +401,11 @@ h6 {
 }
 
 .hero-description {
-  max-width: 640px;
+  max-width: 600px;
   font-family: 'Poppins', sans-serif;
-  font-size: clamp(14px, 1.1vw, 18px);
+  font-size: clamp(14px, 1.1vw, 17px);
   line-height: 1.8;
-  color: rgba(255, 255, 255, 0.88);
+  color: rgba(255, 255, 255, 0.82);
   margin-bottom: 38px;
 }
 
@@ -375,8 +422,8 @@ h6 {
 
 .hero-btn-primary,
 .hero-btn-secondary {
-  height: 54px;
-  padding: 0 34px;
+  height: 52px;
+  padding: 0 32px;
   border-radius: 999px;
   font-family: 'Poppins', sans-serif;
   font-size: 11px;
@@ -384,14 +431,17 @@ h6 {
   letter-spacing: 0.18em;
   text-transform: uppercase;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background 0.28s ease, border-color 0.28s ease, transform 0.22s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .hero-btn-primary {
   border: 1px solid transparent;
   background: var(--primary);
   color: #ffffff;
-  box-shadow: 0 12px 28px rgba(17, 66, 50, 0.28);
+  box-shadow: 0 10px 28px rgba(17, 66, 50, 0.30);
 }
 
 .hero-btn-primary:hover {
@@ -400,21 +450,21 @@ h6 {
 }
 
 .hero-btn-secondary {
-  border: 1px solid rgba(255, 255, 255, 0.24);
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--petal);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--petal, #fff);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
 
 .hero-btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.13);
   border-color: var(--bloom-pale);
   transform: translateY(-2px);
 }
 
 /* =========================================================
-   NAVIGATION
+   NAVIGATION — anchored to slide, not flow container
 ========================================================= */
 
 .hero-nav-wrapper {
@@ -438,7 +488,10 @@ h6 {
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   cursor: pointer;
-  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.25s ease, transform 0.22s ease;
 }
 
 .hero-prev-btn:hover,
@@ -448,14 +501,71 @@ h6 {
 }
 
 /* =========================================================
-   TABLET
+   TRUST BAR
+========================================================= */
+
+.trust-section {
+  /* background: var(--bg-de, #0b1a14); */
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.trust-bar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+}
+
+.trust-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 28px 32px;
+  border-right: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.trust-item:last-child {
+  border-right: none;
+}
+
+.trust-icon-wrap {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.trust-icon {
+  font-size: 18px;
+  color: var(--bloom-pale, #a8d5b5);
+}
+
+.trust-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 3px;
+}
+
+.trust-desc {
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.52);
+  line-height: 1.4;
+}
+
+/* =========================================================
+   TABLET  (≤ 1024px)
 ========================================================= */
 
 @media (max-width: 1024px) {
-
   .hero-container {
     height: 82vh;
-    min-height: 580px;
+    min-height: 560px;
   }
 
   .hero-content {
@@ -463,95 +573,107 @@ h6 {
   }
 
   .hero-description {
-    max-width: 560px;
+    max-width: 520px;
   }
 
   .hero-nav-wrapper {
     right: 28px;
     bottom: 28px;
   }
+
+  .trust-item {
+    padding: 22px 20px;
+    gap: 12px;
+  }
 }
 
 /* =========================================================
-   MOBILE
+   MOBILE  (≤ 768px)
+   — single unified block, no duplicates
 ========================================================= */
 
 @media (max-width: 768px) {
 
+  /* Container */
   .hero-container {
-    height: 90vh;
-    min-height: 90vh;
+    height: 92svh;
+    min-height: 560px;
   }
 
+  /* Image: subtle scale, top-anchored so subjects stay visible */
   .hero-bg-img {
-    transform: scale(1.22);
+    object-position: center top;
+    transform: scale(1.08);
   }
 
   .swiper-slide-active .hero-bg-img {
-    transform: scale(1.32);
+    transform: scale(1.13);
   }
 
+  /* Overlay: bottom-heavy so text stays readable, top stays scenic */
   .hero-overlay {
-    background:
-      linear-gradient(180deg,
-        rgba(11, 26, 20, 0.14) 0%,
-        rgba(11, 26, 20, 0.42) 55%,
-        rgba(11, 26, 20, 0.68) 100%);
+    background: linear-gradient(to top,
+        rgba(11, 26, 20, 0.92) 0%,
+        rgba(11, 26, 20, 0.60) 35%,
+        rgba(11, 26, 20, 0.20) 65%,
+        rgba(11, 26, 20, 0.04) 100%);
   }
 
+  /* Push text to bottom */
   .hero-content-wrapper {
     align-items: flex-end;
-    padding-bottom: 110px;
+    padding-bottom: 100px;
   }
 
   .hero-content {
-    padding: 0 24px;
+    padding: 0 22px;
   }
 
+  /* Typography */
   .hero-tag {
     font-size: 9px;
-    margin-bottom: 14px;
+    letter-spacing: 0.22em;
+    margin-bottom: 12px;
   }
 
   .hero-title {
-    line-height: 1.02;
-    margin-bottom: 16px;
+    font-size: clamp(36px, 11vw, 54px);
+    line-height: 1.0;
+    margin-bottom: 12px;
   }
 
   .hero-subtitle {
-    margin-bottom: 16px;
+    font-size: clamp(16px, 4.5vw, 22px);
+    margin-bottom: 14px;
   }
 
   .hero-description {
-    font-size: 14px;
+    font-size: 13.5px;
     line-height: 1.7;
-    margin-bottom: 28px;
+    margin-bottom: 26px;
     max-width: 100%;
   }
 
+  /* Buttons: side-by-side, equal width */
   .hero-buttons {
-    width: 100%;
-    gap: 12px;
+    gap: 10px;
+    flex-wrap: nowrap;
   }
 
   .hero-btn-primary,
   .hero-btn-secondary {
     flex: 1;
-    min-width: 0;
     height: 46px;
-    padding: 0 14px;
+    padding: 0 12px;
     font-size: 10px;
     letter-spacing: 0.1em;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
     white-space: nowrap;
   }
 
+  /* Nav */
   .hero-nav-wrapper {
-    right: 20px;
-    bottom: 24px;
+    right: 18px;
+    bottom: 20px;
     gap: 10px;
   }
 
@@ -561,57 +683,86 @@ h6 {
     height: 44px;
     font-size: 13px;
   }
+
+  /* Trust bar: 2×2 grid */
+  .trust-bar {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .trust-item {
+    padding: 18px 16px;
+    border-right: 1px solid rgba(255, 255, 255, 0.07);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  }
+
+  /* Remove right border on even items, bottom border on last row */
+  .trust-item:nth-child(2n) {
+    border-right: none;
+  }
+
+  .trust-item:nth-child(3),
+  .trust-item:nth-child(4) {
+    border-bottom: none;
+  }
 }
 
 /* =========================================================
-   SMALL MOBILE
+   SMALL MOBILE  (≤ 480px)
 ========================================================= */
 
 @media (max-width: 480px) {
-
   .hero-container {
-    min-height: 90vh;
+    min-height: 92svh;
   }
 
   .hero-content {
-    padding: 0 20px;
+    padding: 0 18px;
+  }
+
+  .hero-content-wrapper {
+    padding-bottom: 90px;
   }
 
   .hero-title {
-    font-size: clamp(38px, 12vw, 54px);
+    font-size: clamp(34px, 12vw, 50px);
   }
 
   .hero-subtitle {
-    font-size: 16px;
+    font-size: 15px;
   }
 
   .hero-description {
     font-size: 13px;
   }
 
+  /* Stack buttons on very small screens */
   .hero-buttons {
     flex-direction: column;
-    align-items: stretch;
+    gap: 10px;
   }
 
   .hero-btn-primary,
   .hero-btn-secondary {
+    flex: unset;
     width: 100%;
-    padding: 0 18px;
-  }
-}
-
-@media (max-width: 768px) {
-
-  .hero-overlay {
-    background:
-      linear-gradient(to top,
-        rgba(11, 26, 20, 0.68) 0%,
-        rgba(11, 26, 20, 0.46) 32%,
-        rgba(11, 26, 20, 0.22) 58%,
-        rgba(11, 26, 20, 0.03) 100%) !important;
+    padding: 0 20px;
+    height: 48px;
+    font-size: 10px;
   }
 
+  /* Trust: single column */
+  .trust-bar {
+    grid-template-columns: 1fr;
+  }
+
+  .trust-item {
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  }
+
+  .trust-item:last-child {
+    border-bottom: none;
+  }
 }
 
 /* Animations for text reveal in active slide */

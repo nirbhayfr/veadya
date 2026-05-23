@@ -30,37 +30,34 @@ const Hero = () => {
 			desc: "Powerful Ayurvedic juice blend formulated to help maintain healthy glucose metabolism naturally.",
 		},
 	];
+
 	const handlePrev = () => {
 		if (swiperInstance) {
 			swiperInstance.slidePrev();
-			if (swiperInstance.autoplay) {
-				swiperInstance.autoplay.start();
-			}
+			swiperInstance.autoplay?.start();
 		}
 	};
 
 	const handleNext = () => {
 		if (swiperInstance) {
 			swiperInstance.slideNext();
-			if (swiperInstance.autoplay) {
-				swiperInstance.autoplay.start();
-			}
+			swiperInstance.autoplay?.start();
 		}
 	};
 
 	return (
 		<>
 			<section className="hero-section">
-				<div className="hero-container relative">
+				<div className="hero-container">
 					<Swiper
 						modules={[Autoplay, EffectFade]}
 						onSwiper={setSwiperInstance}
 						effect="fade"
 						fadeEffect={{ crossFade: true }}
 						loop={true}
-						speed={900}
+						speed={1000}
 						autoplay={{
-							delay: 2800,
+							delay: 3200,
 							disableOnInteraction: false,
 							pauseOnMouseEnter: false,
 						}}
@@ -69,9 +66,8 @@ const Hero = () => {
 						{slidesData.map((slide) => (
 							<SwiperSlide key={slide.id}>
 								{({ isActive }) => (
-									<div
-										className={`hero-slide-content ${isActive ? "txt-entering" : ""}`}
-									>
+									<div className="hero-slide-content">
+										{/* Background Image */}
 										<div className="hero-slide-bg">
 											<img
 												src={slide.img}
@@ -81,11 +77,13 @@ const Hero = () => {
 										</div>
 
 										{/* Overlay */}
-										<div className="hero-overlay"></div>
+										<div className="hero-overlay" />
 
 										{/* Text Content */}
 										<div className="hero-content-wrapper">
-											<div className="hero-content">
+											<div
+												className={`hero-content ${isActive ? "is-active" : ""}`}
+											>
 												<p className="hero-tag">
 													Premium
 													Ayurvedic
@@ -110,48 +108,45 @@ const Hero = () => {
 													<button className="hero-btn-primary">
 														Shop Now
 													</button>
-
 													<button className="hero-btn-secondary">
 														Learn More
 													</button>
 												</div>
 											</div>
 										</div>
+
+										{/* Navigation — inside slide so it's always visible */}
+										<div className="hero-nav-wrapper">
+											<button
+												className="hero-prev-btn"
+												onClick={handlePrev}
+												aria-label="Previous slide"
+											>
+												<i className="fa-solid fa-chevron-left" />
+											</button>
+											<button
+												className="hero-next-btn"
+												onClick={handleNext}
+												aria-label="Next slide"
+											>
+												<i className="fa-solid fa-chevron-right" />
+											</button>
+										</div>
 									</div>
 								)}
 							</SwiperSlide>
 						))}
 					</Swiper>
-
-					{/* Custom Navigation Buttons */}
-					<div className="section-container">
-						<div className="hero-nav-wrapper">
-							<button
-								className="hero-prev-btn"
-								onClick={handlePrev}
-								aria-label="Previous slide"
-							>
-								<i className="fa-solid fa-chevron-left" />
-							</button>
-							<button
-								className="hero-next-btn"
-								onClick={handleNext}
-								aria-label="Next slide"
-							>
-								<i className="fa-solid fa-chevron-right" />
-							</button>
-						</div>
-					</div>
 				</div>
 			</section>
 
-			{/* Trust Section — visible on all views */}
+			{/* Trust Bar */}
 			<section className="trust-section">
 				<div className="section-container">
 					<div className="trust-bar">
 						<div className="trust-item trust-item-border-r">
 							<div className="trust-icon-wrap">
-								<i className="fa-solid fa-seedling trust-icon"></i>
+								<i className="fa-solid fa-seedling trust-icon" />
 							</div>
 							<div>
 								<p className="trust-title">
@@ -165,7 +160,7 @@ const Hero = () => {
 						</div>
 						<div className="trust-item trust-item-border-r">
 							<div className="trust-icon-wrap">
-								<i className="fa-solid fa-shield-halved trust-icon"></i>
+								<i className="fa-solid fa-shield-halved trust-icon" />
 							</div>
 							<div>
 								<p className="trust-title">
@@ -178,7 +173,7 @@ const Hero = () => {
 						</div>
 						<div className="trust-item trust-item-border-r">
 							<div className="trust-icon-wrap">
-								<i className="fa-solid fa-flask-vial trust-icon"></i>
+								<i className="fa-solid fa-flask-vial trust-icon" />
 							</div>
 							<div>
 								<p className="trust-title">
@@ -192,7 +187,7 @@ const Hero = () => {
 						</div>
 						<div className="trust-item">
 							<div className="trust-icon-wrap">
-								<i className="fa-solid fa-users trust-icon"></i>
+								<i className="fa-solid fa-users trust-icon" />
 							</div>
 							<div>
 								<p className="trust-title">
