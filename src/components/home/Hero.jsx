@@ -18,7 +18,7 @@ const Hero = () => {
 		{
 			id: 2,
 			img: "/banner-2.png",
-			title: "Calmvita+",
+			title: "Calmiva+",
 			subtitle: "Stress Relief & Better Sleep",
 			desc: "A calming botanical blend crafted to support relaxation, emotional balance, and restful sleep.",
 		},
