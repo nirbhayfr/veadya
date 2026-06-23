@@ -75,7 +75,7 @@ const CartDrawer = () => {
               <span className="font-serif text-2xl" style={{color:'var(--primary)', fontWeight:500}}>₹{subtotal.toLocaleString()}</span>
             </div>
             <p className="font-sans mb-5" style={{fontSize:'9.5px', letterSpacing:'0.1em', color:'rgba(42,75,74,0.5)', textTransform:'uppercase'}}>
-              Taxes &amp; shipping calculated at checkout
+              Taxes calculated at checkout. Shipping is free.
             </p>
 
             {/* Trust mini-badges */}
@@ -85,7 +85,7 @@ const CartDrawer = () => {
               </span>
               <span style={{width:'1px', height:'10px', background:'rgba(1,114,110,0.2)'}}></span>
               <span className="flex items-center gap-1 font-sans" style={{fontSize:'9px', color:'var(--primary)', letterSpacing:'0.08em'}}>
-                <i className="fa-solid fa-truck-fast text-[8px]"></i> Free shipping ₹999+
+                <i className="fa-solid fa-truck-fast text-[8px]"></i> Free shipping
               </span>
               <span style={{width:'1px', height:'10px', background:'rgba(1,114,110,0.2)'}}></span>
               <span className="flex items-center gap-1 font-sans" style={{fontSize:'9px', color:'var(--primary)', letterSpacing:'0.08em'}}>

@@ -193,6 +193,36 @@ h6 {
   transform: scale(1.1);
 }
 
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 12px 22px;
+  border-radius: 9999px;
+  border: 1px solid var(--primary);
+  background: var(--primary);
+  color: var(--petal) !important;
+  font-family: 'Poppins', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  line-height: 1;
+  text-decoration: none;
+  text-transform: uppercase;
+  box-shadow: 0 10px 24px rgba(17, 66, 50, 0.16);
+  transition: all 0.25s ease;
+}
+
+.btn-primary:hover {
+  background: var(--primary-dk);
+  border-color: var(--primary-dk);
+  color: #fff !important;
+  transform: translateY(-1px);
+  box-shadow: 0 14px 30px rgba(17, 66, 50, 0.22);
+}
+
 .cart-btn {
   position: relative;
 }
@@ -5118,7 +5148,7 @@ h6 {
 /* ── Payment Card Grid ── */
 .co-pay-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
   margin-bottom: 24px;
 }

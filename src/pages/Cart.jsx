@@ -7,7 +7,7 @@ import CartItem from '../components/cart/CartItem';
 const CartPage = () => {
   const { items: cartItems } = useSelector((state) => state.cart);
   const subtotal = cartItems.reduce((t, i) => t + i.price * i.quantity, 0);
-  const shipping = subtotal > 999 ? 0 : 150;
+  const shipping = 0;
   const total    = subtotal + shipping;
 
   /* ── Empty State ── */
@@ -95,7 +95,7 @@ const CartPage = () => {
               <div className="cart-trust-row">
                 {[
                   { Icon: ShieldCheck, label: 'Secure Payment' },
-                  { Icon: Truck,       label: 'Free Shipping > ₹999' },
+                  { Icon: Truck,       label: 'Free Shipping' },
                   { Icon: RefreshCcw,  label: 'Easy Returns' },
                 ].map(({ Icon, label }) => (
                   <div key={label} className="cart-trust-badge">
@@ -124,18 +124,13 @@ const CartPage = () => {
                       <span className="cart-summary-val">₹{subtotal.toLocaleString()}</span>
                     </div>
                     <div className="cart-summary-row">
-                      <span className="cart-summary-lbl">Est. Shipping</span>
+                      <span className="cart-summary-lbl">Shipping</span>
                       <span className="cart-summary-val">
                         {shipping === 0
                           ? <span className="cart-summary-free">FREE</span>
                           : `₹${shipping}`}
                       </span>
                     </div>
-                    {shipping > 0 && (
-                      <p className="cart-summary-free-hint">
-                        <i className="fa-solid fa-truck-fast" /> Add ₹{(999 - subtotal).toLocaleString()} more for free shipping
-                      </p>
-                    )}
                     <div className="cart-summary-total-row">
                       <span className="cart-summary-total-lbl">Total</span>
                       <span className="cart-summary-total-val">₹{total.toLocaleString()}</span>

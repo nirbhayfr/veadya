@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { api } from '../utils/api';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -10,16 +11,21 @@ const Contact = () => {
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    // Simulate luxury api transmission response
-    setTimeout(() => {
+    try {
+      setError(null);
+      setLoading(true);
+      await api.post('/contact', formData);
       setLoading(false);
       setIsSubmitted(true);
       setFormData({ name: '', email: '', subject: 'General Inquiry', message: '' });
-    }, 1200);
+    } catch (err) {
+      setError(err.message || 'Failed to submit query. Please try again.');
+      setLoading(false);
+    }
   };
 
   const handleChange = (e) => {
@@ -294,6 +300,20 @@ const Contact = () => {
               ) : (
                 /* Interactive Form State */
                 <form onSubmit={handleSubmit}>
+                  {error && (
+                    <div style={{
+                      background: '#fef2f2',
+                      color: '#b91c1c',
+                      fontSize: '13px',
+                      padding: '14px 20px',
+                      borderRadius: '10px',
+                      border: '1px solid #fca5a5',
+                      fontFamily: '"Jost", sans-serif',
+                      marginBottom: '20px'
+                    }}>
+                      {error}
+                    </div>
+                  )}
                   <h3 style={{
                     fontFamily: '"Cormorant Garamond", serif',
                     fontSize: '30px',

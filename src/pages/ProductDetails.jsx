@@ -107,8 +107,8 @@ const ProductDetails = () => {
   const cartItems = useSelector((state) => state.cart.items);
   
   // Find current product
-  const product = products.find((p) => p.id === parseInt(id)) || products[0];
-  const isInCart = cartItems.some((item) => item.id === product.id);
+  const product = products.find((p) => String(p.id) === String(id) || String(p._id) === String(id)) || products[0];
+  const isInCart = product ? cartItems.some((item) => String(item.id) === String(product.id)) : false;
 
   // States
   const [quantity, setQuantity] = useState(1);

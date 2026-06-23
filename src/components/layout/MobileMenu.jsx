@@ -191,11 +191,20 @@ const MobileMenu = () => {
                 <Link to="/orders" className="flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-gray-50 transition-all text-sm text-text-dark" onClick={close}>
                   <i className="fa-solid fa-box-open" style={{ color: 'var(--primary)', opacity: 0.5, fontSize: '13px' }}></i> My Orders
                 </Link>
+                {user?.role === 'admin' && (
+                  <Link to="/admin" className="flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-gray-50 transition-all text-sm text-text-dark" onClick={close}>
+                    <i className="fa-solid fa-screwdriver-wrench" style={{ color: 'var(--primary)', opacity: 0.5, fontSize: '13px' }}></i> Admin Panel
+                  </Link>
+                )}
                 <Link to="/profile" className="flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-gray-50 transition-all text-sm text-text-dark" onClick={close}>
                   <i className="fa-solid fa-user-gear" style={{ color: 'var(--primary)', opacity: 0.5, fontSize: '13px' }}></i> Settings
                 </Link>
                 <button
-                  onClick={() => { dispatch(logout()); close(); }}
+                  onClick={() => {
+                    localStorage.removeItem('token');
+                    dispatch(logout());
+                    close();
+                  }}
                   className="flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-red-50 transition-all text-sm text-red-500 w-full text-left">
                   <i className="fa-solid fa-arrow-right-from-bracket text-[13px]"></i> Sign Out
                 </button>

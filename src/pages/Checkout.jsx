@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+import { clearCart } from '../store/slices/cartSlice';
+import { api } from '../utils/api';
 
 const STEPS = [
   { id: 1, key: 'identity',    label: 'Identity',     icon: 'fa-solid fa-user' },
@@ -9,9 +11,8 @@ const STEPS = [
 ];
 
 const PAYMENT_OPTS = [
-  { id: 'card', label: 'Credit / Debit Card', icon: 'fa-solid fa-credit-card',     desc: 'Visa, Mastercard, RuPay' },
-  { id: 'upi',  label: 'UPI Payment',         icon: 'fa-solid fa-mobile-screen',   desc: 'GPay, PhonePe, Paytm' },
-  { id: 'cod',  label: 'Cash on Delivery',    icon: 'fa-solid fa-money-bill-wave', desc: 'Pay when it arrives' },
+  { id: 'razorpay', label: 'Razorpay',         icon: 'fa-solid fa-credit-card',     desc: 'Cards, UPI, wallets & netbanking' },
+  { id: 'cod',      label: 'Cash on Delivery', icon: 'fa-solid fa-money-bill-wave', desc: 'Pay when it arrives' },
 ];
 
 const Field = ({ label, name, value, onChange, placeholder, type = 'text', half = false }) => (
@@ -28,22 +29,131 @@ const Field = ({ label, name, value, onChange, placeholder, type = 'text', half 
   </div>
 );
 
+const loadRazorpayScript = () => {
+  return new Promise((resolve) => {
+    const script = document.createElement('script');
+    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+};
+
 const CheckoutPage = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { items: cartItems } = useSelector((state) => state.cart);
   const subtotal = cartItems.reduce((t, i) => t + i.price * i.quantity, 0);
-  const shipping  = subtotal > 999 ? 0 : 150;
+  const shipping  = 0;
   const total     = subtotal + shipping;
 
   const [step, setStep] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [form, setForm] = useState({
     firstName: '', lastName: '', email: '', phone: '',
     address: '', city: '', state: '', pincode: '',
-    payment: 'card', cardNum: '', expiry: '', cvv: '', upiId: '',
+    payment: 'razorpay',
   });
 
   const handle = (e) => setForm({ ...form, [e.target.name]: e.target.value });
   const next   = () => setStep((s) => Math.min(s + 1, 3));
   const back   = () => setStep((s) => Math.max(s - 1, 1));
+
+  const handlePlaceOrder = async () => {
+    if (cartItems.length === 0) {
+      alert("Your bag is empty!");
+      return;
+    }
+    try {
+      setError(null);
+      setLoading(true);
+
+      const items = cartItems.map(item => ({
+        product: item._id, // MongoDB ObjectId
+        frontendId: String(item.id),
+        name: item.name,
+        price: item.price,
+        image: item.image,
+        quantity: item.quantity
+      }));
+
+      const shippingAddress = {
+        name: `${form.firstName} ${form.lastName}`.trim(),
+        phone: form.phone,
+        email: form.email,
+        addressLine1: form.address,
+        city: form.city,
+        state: form.state,
+        pinCode: form.pincode,
+        country: 'India'
+      };
+
+      const payload = {
+        items,
+        shippingAddress,
+        paymentMethod: form.payment
+      };
+
+      if (form.payment === 'cod') {
+        const res = await api.post('/order', payload);
+        alert('Order placed successfully (Cash on Delivery)!');
+        dispatch(clearCart());
+        navigate('/');
+      } else {
+        // Razorpay flow
+        const scriptLoaded = await loadRazorpayScript();
+        if (!scriptLoaded) {
+          throw new Error('Razorpay SDK failed to load. Are you offline?');
+        }
+
+        const checkoutData = await api.post('/order/razorpay', payload);
+        const { order, razorpayOrder } = checkoutData;
+
+        const options = {
+          key: import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_Sk1dkDx87k6FxW',
+          amount: razorpayOrder.amount,
+          currency: razorpayOrder.currency,
+          name: 'Veadya',
+          description: 'Ayurvedic Ritual Essentials',
+          order_id: razorpayOrder.id,
+          handler: async (response) => {
+            try {
+              setLoading(true);
+              const verifyRes = await api.post('/payment/verify', response);
+              if (verifyRes.success) {
+                alert('Payment verified and order placed successfully!');
+                dispatch(clearCart());
+                navigate('/');
+              } else {
+                throw new Error(verifyRes.message || 'Payment verification failed');
+              }
+            } catch (err) {
+              alert(err.message || 'Payment verification failed. Please contact support.');
+            } finally {
+              setLoading(false);
+            }
+          },
+          prefill: {
+            name: `${form.firstName} ${form.lastName}`,
+            email: form.email,
+            contact: form.phone
+          },
+          theme: {
+            color: '#114232'
+          }
+        };
+
+        const rzp = new window.Razorpay(options);
+        rzp.open();
+      }
+    } catch (err) {
+      setError(err.message || 'An error occurred while placing order.');
+      alert(err.message || 'An error occurred while placing order.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="cart-page-root">
@@ -159,8 +269,7 @@ const CheckoutPage = () => {
                     {/* Shipping method selector */}
                     <div className="co-shipping-opts">
                       {[
-                        { id: 'standard', label: 'Standard Delivery', days: '5–7 business days', price: shipping === 0 ? 'FREE' : `₹${shipping}` },
-                        { id: 'express',  label: 'Express Delivery',  days: '2–3 business days', price: '₹299' },
+                        { id: 'standard', label: 'Standard Delivery', days: '5-7 business days', price: 'FREE' },
                       ].map((opt) => (
                         <div key={opt.id} className={`co-shipping-opt ${opt.id === 'standard' ? 'co-shipping-opt--active' : ''}`}>
                           <div className={`co-shipping-radio ${opt.id === 'standard' ? 'co-shipping-radio--active' : ''}`}>
@@ -219,39 +328,10 @@ const CheckoutPage = () => {
                       ))}
                     </div>
 
-                    {/* Card fields */}
-                    {form.payment === 'card' && (
-                      <div className="co-card-fields">
-                        <div className="checkout-field checkout-field--full">
-                          <label className="checkout-label">Card Number</label>
-                          <div className="co-card-input-wrap">
-                            <i className="fa-regular fa-credit-card co-card-icon" />
-                            <input name="cardNum" value={form.cardNum} onChange={handle} placeholder="1234  5678  9012  3456" className="checkout-input co-card-input" />
-                          </div>
-                        </div>
-                        <div className="checkout-form-grid" style={{ marginTop: '12px' }}>
-                          <div className="checkout-field">
-                            <label className="checkout-label">Expiry Date</label>
-                            <input name="expiry" value={form.expiry} onChange={handle} placeholder="MM / YY" className="checkout-input" />
-                          </div>
-                          <div className="checkout-field">
-                            <label className="checkout-label">CVV <i className="fa-solid fa-circle-question" style={{ fontSize: '9px', opacity: 0.4 }} /></label>
-                            <input name="cvv" value={form.cvv} onChange={handle} placeholder="• • •" className="checkout-input" type="password" />
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* UPI field */}
-                    {form.payment === 'upi' && (
-                      <div className="co-card-fields">
-                        <div className="checkout-field checkout-field--full">
-                          <label className="checkout-label">UPI ID</label>
-                          <div className="co-card-input-wrap">
-                            <i className="fa-solid fa-at co-card-icon" />
-                            <input name="upiId" value={form.upiId} onChange={handle} placeholder="yourname@upi" className="checkout-input co-card-input" />
-                          </div>
-                        </div>
+                    {form.payment === 'razorpay' && (
+                      <div className="co-cod-note">
+                        <i className="fa-solid fa-circle-info" />
+                        <p>You will be redirected to Razorpay to complete payment securely using UPI, cards, wallets, or netbanking.</p>
                       </div>
                     )}
 
@@ -272,13 +352,18 @@ const CheckoutPage = () => {
                       ))}
                     </div>
 
+                    {error && (
+                      <div className="bg-red-50 text-red-600 text-xs p-3 rounded-lg border border-red-100 font-medium mb-4">
+                        {error}
+                      </div>
+                    )}
                     <div className="co-form-footer">
-                      <button className="co-back-btn" onClick={back}>
+                      <button className="co-back-btn" onClick={back} disabled={loading}>
                         <i className="fa-solid fa-arrow-left mr-2" /> Back
                       </button>
-                      <button className="co-place-btn">
+                      <button className="co-place-btn" onClick={handlePlaceOrder} disabled={loading}>
                         <i className="fa-solid fa-lock mr-2" style={{ fontSize: '11px' }} />
-                        Place Order — ₹{total.toLocaleString()}
+                        {loading ? 'Processing...' : `Place Order — ₹${total.toLocaleString()}`}
                       </button>
                     </div>
                   </div>

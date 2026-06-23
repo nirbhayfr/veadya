@@ -1,10 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, User, ArrowRight } from 'lucide-react';
+import { api } from '../../utils/api';
 
 const RegisterForm = () => {
+  const navigate = useNavigate();
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+
   const formik = useFormik({
     initialValues: {
       fullName: '',
@@ -20,14 +25,33 @@ const RegisterForm = () => {
         .oneOf([Yup.ref('password'), null], 'Passwords must match')
         .required('Confirm password is required'),
     }),
-    onSubmit: (values) => {
-      console.log('Register values:', values);
-      alert('Registration successful (Mock)');
+    onSubmit: async (values) => {
+      try {
+        setError(null);
+        setLoading(true);
+        await api.post('/user/register', {
+          name: values.fullName,
+          email: values.email,
+          password: values.password,
+          confirmPassword: values.confirmPassword,
+        });
+        alert('Registration successful! Please sign in.');
+        navigate('/login');
+      } catch (err) {
+        setError(err.message || 'Registration failed. Please try again.');
+      } finally {
+        setLoading(false);
+      }
     },
   });
 
   return (
     <form onSubmit={formik.handleSubmit} className="space-y-5">
+      {error && (
+        <div className="bg-red-50 text-red-600 text-xs p-3.5 rounded-xl border border-red-100 font-medium">
+          {error}
+        </div>
+      )}
       <div className="space-y-4">
         <div className="relative">
           <label className="text-[10px] uppercase tracking-widest text-primary font-semibold mb-1.5 block">Full Name</label>
@@ -100,9 +124,10 @@ const RegisterForm = () => {
 
       <button
         type="submit"
-        className="w-full bg-primary text-white py-4 rounded-xl font-semibold tracking-widest uppercase text-xs hover:bg-primary-dk shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2"
+        disabled={loading}
+        className="w-full bg-primary text-white py-4 rounded-xl font-semibold tracking-widest uppercase text-xs hover:bg-primary-dk shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        Create Account <ArrowRight size={16} />
+        {loading ? 'Creating Account...' : 'Create Account'} <ArrowRight size={16} />
       </button>
 
       <div className="text-center mt-8">

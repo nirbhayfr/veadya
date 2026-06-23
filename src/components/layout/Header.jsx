@@ -34,7 +34,7 @@ const Header = () => {
         <div className="marquee-track">
           {[...Array(8)].map((_, i) => (
             <React.Fragment key={i}>
-              <span className="marquee-item"><i className="fa-solid fa-truck-fast marquee-icon"></i>FREE SHIPPING ON RITUAL SETS OVER ₹999</span>
+              <span className="marquee-item"><i className="fa-solid fa-truck-fast marquee-icon"></i>FREE SHIPPING ON EVERY ORDER</span>
               <span className="marquee-item"><i className="fa-solid fa-leaf marquee-icon"></i>100% NATURAL · AYURVEDIC FORMULAS</span>
             </React.Fragment>
           ))}
@@ -124,6 +124,11 @@ const Header = () => {
               <li>
                 <Link to="/contact" className={`nav-link ${location.pathname === '/contact' ? 'nav-active' : ''}`}>Contact Us</Link>
               </li>
+              {isAuthenticated && user?.role === 'admin' && (
+                <li>
+                  <Link to="/admin" className={`nav-link ${location.pathname.startsWith('/admin') ? 'nav-active' : ''}`}>Admin Panel</Link>
+                </li>
+              )}
             </ul>
           </nav>
 
@@ -175,7 +180,10 @@ const Header = () => {
                           <li><Link to="/wishlist" className="text-sm text-text-dark hover:text-primary block py-2">Wishlist</Link></li>
                         </ul>
                         <button 
-                          onClick={() => dispatch(logout())}
+                          onClick={() => {
+                            localStorage.removeItem('token');
+                            dispatch(logout());
+                          }}
                           className="w-full mt-4 py-3 bg-gray-50 text-primary text-xs font-bold uppercase tracking-widest rounded-xl hover:bg-bg-mist transition-all border border-gray-100"
                         >
                           Sign Out
