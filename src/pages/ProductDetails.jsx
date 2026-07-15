@@ -1,8 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { addToCart } from '../store/slices/cartSlice';
-import { toggleCart } from '../store/slices/uiSlice';
+import { useState, useEffect } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import ProductCard from '../components/shop/ProductCard';
 
 // Comprehensive botanical profile mapping for each product to make details feel ultra-premium
@@ -101,14 +99,10 @@ const BOTANICAL_PROFILES = {
 
 const ProductDetails = () => {
   const { id } = useParams();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
   const products = useSelector((state) => state.products.items);
-  const cartItems = useSelector((state) => state.cart.items);
   
   // Find current product
   const product = products.find((p) => String(p.id) === String(id) || String(p._id) === String(id)) || products[0];
-  const isInCart = product ? cartItems.some((item) => String(item.id) === String(product.id)) : false;
 
   // States
   const [quantity, setQuantity] = useState(1);
@@ -176,14 +170,6 @@ const ProductDetails = () => {
     product.id === 5 ? "https://images.unsplash.com/photo-1590156546746-c588a113f6f3?q=80&w=1000&auto=format&fit=crop" :
     "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?q=80&w=1000&auto=format&fit=crop"  // Case 6
   ];
-
-  const handleAddToCart = () => {
-    // Add multiple items based on quantity
-    for (let i = 0; i < quantity; i++) {
-      dispatch(addToCart(product));
-    }
-    dispatch(toggleCart());
-  };
 
   // Dynamically calculate recommended products (excluding current one)
   const recommendations = products
@@ -502,7 +488,8 @@ const ProductDetails = () => {
 
                 {/* Primary Add to Bag / Checkout CTA */}
                 <button
-                  onClick={isInCart ? () => navigate('/checkout') : handleAddToCart}
+                  disabled
+                  aria-label="Coming soon"
                   className="btn-primary"
                   style={{
                     flex: 1,
@@ -510,11 +497,12 @@ const ProductDetails = () => {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    cursor: 'pointer'
+                    cursor: 'not-allowed',
+                    opacity: 0.75
                   }}
                 >
-                  <i className={isInCart ? "fa-solid fa-arrow-right-to-bracket" : "fa-solid fa-bag-shopping"} style={{ fontSize: '14px' }} />
-                  {isInCart ? "Go to Checkout" : "Add to Ritual Bag"}
+                  <i className="fa-regular fa-clock" style={{ fontSize: '14px' }} />
+                  Coming Soon
                 </button>
 
               </div>

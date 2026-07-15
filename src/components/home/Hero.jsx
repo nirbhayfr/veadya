@@ -105,12 +105,17 @@ const Hero = () => {
 												</p>
 
 												<div className="hero-buttons">
-													<button className="hero-btn-primary">
-														Shop Now
+													<button
+														className="hero-btn-primary"
+														disabled
+														aria-label="Coming soon"
+													>
+														Coming
+														Soon
 													</button>
-													<button className="hero-btn-secondary">
-														Learn More
-													</button>
+													{/* <button className="hero-btn-secondary" disabled aria-label="Coming soon">
+												Coming Soon
+											</button> */}
 												</div>
 											</div>
 										</div>

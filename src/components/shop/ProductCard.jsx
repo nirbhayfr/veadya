@@ -1,18 +1,6 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { addToCart } from '../../store/slices/cartSlice';
 
 const ProductCard = ({ product, isDark = false }) => {
-  const dispatch   = useDispatch();
-  const cartItems  = useSelector((state) => state.cart.items);
-  const isInCart   = cartItems.some((item) => item.id === product.id);
-
-  const handleAddToCart = () => {
-    if (isInCart) return;
-    dispatch(addToCart(product));
-  };
-
   if (isDark) {
     return (
       <div className="group cursor-pointer flex flex-col w-full h-full bg-white/[0.02] hover:bg-white/[0.06] transition-all duration-500 backdrop-blur-[1px] relative">
@@ -46,21 +34,15 @@ const ProductCard = ({ product, isDark = false }) => {
               ₹ {product.price}
             </p>
             <button
-              onClick={handleAddToCart}
-              disabled={isInCart}
+              disabled
+              aria-label="Coming soon"
               className="bg-white/5 backdrop-blur-sm border border-white/20 text-white px-4 py-2 text-[9px] uppercase tracking-[0.15em] hover:bg-white hover:text-[var(--bg-deep)] transition-all font-medium rounded-sm cursor-pointer disabled:opacity-60 disabled:cursor-default"
               style={{
                 whiteSpace: 'nowrap',
                 flexShrink: 0
               }}
             >
-              {isInCart ? (
-                <>
-                  <i className="fa-solid fa-check mr-1"></i> IN BAG
-                </>
-              ) : (
-                'ADD TO CART'
-              )}
+              COMING SOON
             </button>
           </div>
         </div>
@@ -99,20 +81,19 @@ const ProductCard = ({ product, isDark = false }) => {
 
           <button
             className="prod-card-add-text"
-            onClick={handleAddToCart}
-            disabled={isInCart}
-            aria-label={isInCart ? 'In Bag' : 'Add to Cart'}
+            disabled
+            aria-label="Coming soon"
             style={{
               padding: '10px 16px',
               fontSize: '10px',
               fontWeight: '500',
               textTransform: 'uppercase',
               letterSpacing: '0.15em',
-              background: isInCart ? 'var(--surface)' : 'var(--primary)',
-              color: isInCart ? 'var(--text-dark)' : '#fff',
+              background: 'var(--surface)',
+              color: 'var(--text-dark)',
               border: 'none',
               borderRadius: '6px',
-              cursor: isInCart ? 'default' : 'pointer',
+              cursor: 'not-allowed',
               transition: 'all 0.3s ease',
               display: 'flex',
               alignItems: 'center',
@@ -121,13 +102,7 @@ const ProductCard = ({ product, isDark = false }) => {
               flexShrink: 0
             }}
           >
-            {isInCart ? (
-              <>
-                <i className="fa-solid fa-check" style={{ fontSize: '10px' }}></i> In Bag
-              </>
-            ) : (
-              'Add to Cart'
-            )}
+            Coming Soon
           </button>
         </div>
       </div>

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import Layout from "./components/layout/Layout";
@@ -6,11 +6,10 @@ import OfferModal from "./components/common/OfferModal";
 import Home from "./pages/Home";
 import Shop from "./pages/Shop";
 import About from "./pages/About";
-import Cart from "./pages/Cart";
 import LoginPage from "./pages/auth/LoginPage";
 import RegisterPage from "./pages/auth/RegisterPage";
 import ForgotPassword from "./pages/auth/ForgotPassword";
-import CheckoutPage from "./pages/Checkout";
+import CommerceComingSoon from "./pages/CommerceComingSoon";
 import Contact from "./pages/Contact";
 import ProductDetails from "./pages/ProductDetails";
 import AdminPanel from "./pages/AdminPanel";
@@ -86,8 +85,8 @@ function App() {
 				<Route path="/shop" element={<Shop />} />
 				<Route path="/about" element={<About />} />
 				<Route path="/contact" element={<Contact />} />
-				<Route path="/cart" element={<Cart />} />
-				<Route path="/checkout" element={<CheckoutPage />} />
+				<Route path="/cart" element={<CommerceComingSoon />} />
+				<Route path="/checkout" element={<CommerceComingSoon />} />
 				<Route path="/product/:id" element={<ProductDetails />} />
 				<Route path="/login" element={<LoginPage />} />
 				<Route path="/register" element={<RegisterPage />} />
