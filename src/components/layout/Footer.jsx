@@ -1,7 +1,22 @@
-import React from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useSiteData } from "../../context/SiteDataContext";
+import { api } from "../../utils/api";
 
 const Footer = () => {
+	const { settings, menus } = useSiteData();
+	const [newsletterEmail, setNewsletterEmail] = useState("");
+	const [newsletterMessage, setNewsletterMessage] = useState("");
+	const subscribe = async event => {
+		event.preventDefault();
+		try {
+			await api.post("/newsletter", { email: newsletterEmail });
+			setNewsletterMessage("Thank you for subscribing.");
+			setNewsletterEmail("");
+		} catch (error) {
+			setNewsletterMessage(error.message);
+		}
+	};
 	return (
 		<>
 			<footer className="site-footer footer-inner">
@@ -14,8 +29,8 @@ const Footer = () => {
 								className="footer-logo footer-logo-link"
 							>
 								<img
-									src="/logo/bgremovepng.png"
-									alt="Veadya"
+									src={settings.logo || "/logo/bgremovepng.png"}
+									alt={settings.siteName || "Veadya"}
 									className="footer-logo-img"
 								/>
 								<small>
@@ -45,40 +60,50 @@ const Footer = () => {
 							</div>
 							<div className="footer-socials">
 								<a
-									href="#"
+									href={settings.socialLinks?.instagram || "#"}
 									className="social-btn"
 									aria-label="Instagram"
 								>
 									<i className="fa-brands fa-instagram"></i>
 								</a>
 								<a
-									href="#"
+									href={settings.socialLinks?.facebook || "#"}
 									className="social-btn"
 									aria-label="Facebook"
 								>
 									<i className="fa-brands fa-facebook-f"></i>
 								</a>
 								<a
-									href="#"
+									href={settings.socialLinks?.twitter || "#"}
 									className="social-btn"
 									aria-label="Pinterest"
 								>
 									<i className="fa-brands fa-pinterest-p"></i>
 								</a>
 								<a
-									href="#"
+									href={settings.socialLinks?.youtube || "#"}
 									className="social-btn"
 									aria-label="YouTube"
 								>
 									<i className="fa-brands fa-youtube"></i>
 								</a>
 							</div>
+							<form onSubmit={subscribe} className="mt-5 flex gap-2">
+								<input type="email" required value={newsletterEmail} onChange={event => setNewsletterEmail(event.target.value)} placeholder="Email for wellness notes" className="min-w-0 flex-1 rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-xs text-white placeholder:text-white/45 outline-none" />
+								<button className="rounded-lg bg-white/15 px-3 py-2 text-[10px] uppercase tracking-wider text-white">Join</button>
+							</form>
+							{newsletterMessage && <p className="mt-2 text-[10px] text-white/60">{newsletterMessage}</p>}
 						</div>
 
 						{/* Col 2: Explore */}
 						<div className="footer-explore-col">
 							<p className="footer-col-title">Explore</p>
-							<ul className="footer-nav-list">
+							{menus.footer.length > 0 && <ul className="footer-nav-list">
+								{[...menus.footer].sort((a, b) => (a.order || 0) - (b.order || 0)).map(item => (
+									<li key={`${item.label}-${item.url}`}><Link to={item.url} target={item.target}>{item.label} <i className="fa-solid fa-arrow-right"></i></Link></li>
+								))}
+							</ul>}
+							<ul className={`footer-nav-list ${menus.footer.length ? "hidden" : ""}`}>
 								<li>
 									<Link to="/">
 										Home{" "}
@@ -125,10 +150,7 @@ const Footer = () => {
 											Address
 										</div>
 										<div className="c-info-val">
-											42, Botanical Lane,
-											Rishikesh,
-											<br />
-											Uttarakhand — 249 201
+											{settings.address || "Address available soon"}
 										</div>
 									</div>
 								</li>
@@ -141,8 +163,8 @@ const Footer = () => {
 											Email
 										</div>
 										<div className="c-info-val">
-											<a href="mailto:hello@veadya.in">
-												hello@veadya.in
+											<a href={`mailto:${settings.contactEmail || "hello@veadya.in"}`}>
+												{settings.contactEmail || "hello@veadya.in"}
 											</a>
 										</div>
 									</div>
@@ -156,8 +178,8 @@ const Footer = () => {
 											Phone
 										</div>
 										<div className="c-info-val">
-											<a href="tel:+911234567890">
-												+91 12345 67890
+											<a href={`tel:${settings.contactPhone || ""}`}>
+												{settings.contactPhone || "Phone available soon"}
 											</a>
 										</div>
 									</div>

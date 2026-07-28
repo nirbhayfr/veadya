@@ -13,11 +13,13 @@ import CommerceComingSoon from "./pages/CommerceComingSoon";
 import Contact from "./pages/Contact";
 import ProductDetails from "./pages/ProductDetails";
 import AdminPanel from "./pages/AdminPanel";
+import { CmsPage, Journal, JournalPost } from "./pages/CmsPage";
 
 import { api } from "./utils/api";
 import { login, logout } from "./store/slices/authSlice";
 import { setProducts } from "./store/slices/productSlice";
 import ScrollToTop from "./utils/scrollToTop";
+import { SiteDataProvider } from "./context/SiteDataContext";
 
 function App() {
 	const dispatch = useDispatch();
@@ -78,6 +80,7 @@ function App() {
 	}, [dispatch]);
 
 	return (
+		<SiteDataProvider>
 		<Layout>
 			<ScrollToTop />
 			<Routes>
@@ -95,11 +98,15 @@ function App() {
 					element={<ForgotPassword />}
 				/>
 				<Route path="/admin/*" element={<AdminPanel />} />
+				<Route path="/journal" element={<Journal />} />
+				<Route path="/journal/:slug" element={<JournalPost />} />
+				<Route path="/pages/:slug" element={<CmsPage />} />
 				{/* Fallback to Home for simplicity in this demo */}
 				<Route path="*" element={<Home />} />
 			</Routes>
 			<OfferModal />
 		</Layout>
+		</SiteDataProvider>
 	);
 }
 

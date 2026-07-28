@@ -7,6 +7,7 @@ import {
 	toggleSearch,
 } from "../../store/slices/uiSlice";
 import { logout } from "../../store/slices/authSlice";
+import { useSiteData } from "../../context/SiteDataContext";
 
 const Header = () => {
 	const location = useLocation();
@@ -19,21 +20,10 @@ const Header = () => {
 	);
 	const [isShopHovered, setIsShopHovered] = useState(false);
 	const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
-
-	const categories = [
-		{
-			name: "Juice",
-			img: "/p-7.png",
-		},
-		{
-			name: "Capsule",
-			img: "/p-1.png",
-		},
-		{
-			name: "Drop",
-			img: "/p-3.png",
-		},
-	];
+	const { settings, menus, categories: apiCategories } = useSiteData();
+	const categories = apiCategories
+		.filter(category => category.status !== "inactive")
+		.map(category => ({ name: category.name, img: category.image || "/p-1.png" }));
 
 	return (
 		<>
@@ -97,8 +87,8 @@ const Header = () => {
 
 					<Link to="/" className="site-logo flex items-center">
 						<img
-							src="/logo/bgremovepng.png"
-							alt="Veadya"
+							src={settings.logo || "/logo/bgremovepng.png"}
+							alt={settings.siteName || "Veadya"}
 							style={{
 								height: "54px",
 								width: "auto",
@@ -107,7 +97,27 @@ const Header = () => {
 						/>
 					</Link>
 
-					<nav className="main-nav hidden lg:block">
+					{menus.header.length > 0 && (
+						<nav className="main-nav hidden lg:block">
+							<ul className="nav-list">
+								{[...menus.header].sort((a, b) => (a.order || 0) - (b.order || 0)).map(item => (
+									<li key={`${item.label}-${item.url}`}>
+										<Link
+											to={item.url}
+											target={item.target}
+											className={`nav-link ${location.pathname === item.url ? "nav-active" : ""}`}
+										>
+											{item.label}
+										</Link>
+									</li>
+								))}
+								{isAuthenticated && user?.role === "admin" && (
+									<li><Link to="/admin" className="nav-link">Admin Panel</Link></li>
+								)}
+							</ul>
+						</nav>
+					)}
+					<nav className={menus.header.length ? "hidden" : "main-nav hidden lg:block"}>
 						<ul className="nav-list">
 							<li>
 								<Link

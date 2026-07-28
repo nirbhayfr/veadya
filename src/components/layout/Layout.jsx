@@ -1,4 +1,3 @@
-import React from 'react';
 import { useLocation } from 'react-router-dom';
 import Header from './Header';
 import Footer from './Footer';
@@ -10,17 +9,19 @@ const Layout = ({ children }) => {
   const location = useLocation();
   const authPaths = ['/login', '/register', '/forgot-password'];
   const isAuthPage = authPaths.includes(location.pathname);
+  const isAdminPage = location.pathname.startsWith('/admin');
+  const hideStoreShell = isAuthPage || isAdminPage;
 
   return (
     <div className="min-h-screen flex flex-col">
-      {!isAuthPage && <Header />}
+      {!hideStoreShell && <Header />}
       <main className="flex-grow">
         {children}
       </main>
-      {!isAuthPage && <Footer />}
-      <CartDrawer />
-      <MobileMenu />
-      <SearchOverlay />
+      {!hideStoreShell && <Footer />}
+      {!hideStoreShell && <CartDrawer />}
+      {!hideStoreShell && <MobileMenu />}
+      {!hideStoreShell && <SearchOverlay />}
     </div>
   );
 };

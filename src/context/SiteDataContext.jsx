@@ -1,0 +1,77 @@
+/* eslint-disable react-hooks/set-state-in-effect, react-refresh/only-export-components */
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { api } from '../utils/api';
+
+const SiteDataContext = createContext(null);
+
+const initialState = {
+  settings: {},
+  menus: { header: [], footer: [], mobile: [] },
+  banners: { homepage: [], category: [], sidebar: [], popup: [] },
+  categories: [],
+  contentEntries: [],
+};
+
+export const SiteDataProvider = ({ children }) => {
+  const [data, setData] = useState(initialState);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  const refresh = async () => {
+    setLoading(true);
+    const requests = [
+      ['settings', api.get('/settings')],
+      ['headerMenu', api.get('/menu/location/header')],
+      ['footerMenu', api.get('/menu/location/footer')],
+      ['mobileMenu', api.get('/menu/location/mobile')],
+      ['homepageBanners', api.get('/banner/position/homepage')],
+      ['categoryBanners', api.get('/banner/position/category')],
+      ['sidebarBanners', api.get('/banner/position/sidebar')],
+      ['popupBanners', api.get('/banner/position/popup')],
+      ['categories', api.get('/category')],
+      ['contentEntries', api.get('/content')],
+    ];
+    const results = await Promise.allSettled(requests.map(([, request]) => request));
+    const resolved = Object.fromEntries(results.map((result, index) => [
+      requests[index][0],
+      result.status === 'fulfilled' ? result.value.data : undefined,
+    ]));
+    const failures = results.filter(result => result.status === 'rejected');
+    setData({
+      settings: resolved.settings || {},
+      menus: {
+        header: resolved.headerMenu?.items || [],
+        footer: resolved.footerMenu?.items || [],
+        mobile: resolved.mobileMenu?.items || [],
+      },
+      banners: {
+        homepage: Array.isArray(resolved.homepageBanners) ? resolved.homepageBanners : [],
+        category: Array.isArray(resolved.categoryBanners) ? resolved.categoryBanners : [],
+        sidebar: Array.isArray(resolved.sidebarBanners) ? resolved.sidebarBanners : [],
+        popup: Array.isArray(resolved.popupBanners) ? resolved.popupBanners : [],
+      },
+      categories: Array.isArray(resolved.categories) ? resolved.categories : [],
+      contentEntries: Array.isArray(resolved.contentEntries)
+        ? resolved.contentEntries.filter(entry => entry.status === 'published')
+        : [],
+    });
+    setError(failures.length ? `${failures.length} site content request${failures.length > 1 ? 's' : ''} failed.` : '');
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    refresh();
+    const handleRefresh = () => refresh();
+    window.addEventListener('veadya-site-data-refresh', handleRefresh);
+    return () => window.removeEventListener('veadya-site-data-refresh', handleRefresh);
+  }, []);
+
+  const value = useMemo(() => ({ ...data, loading, error, refresh }), [data, loading, error]);
+  return <SiteDataContext.Provider value={value}>{children}</SiteDataContext.Provider>;
+};
+
+export const useSiteData = () => {
+  const context = useContext(SiteDataContext);
+  if (!context) throw new Error('useSiteData must be used inside SiteDataProvider');
+  return context;
+};

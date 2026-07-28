@@ -1,35 +1,23 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, EffectFade } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/effect-fade";
+import { Link } from "react-router-dom";
+import { useSiteData } from "../../context/SiteDataContext";
 
 const Hero = () => {
 	const [swiperInstance, setSwiperInstance] = useState(null);
-
-	const slidesData = [
-		{
-			id: 1,
-			img: "/banner-1.png",
-			title: "Bowlease+",
-			subtitle: "Natural Digestive Wellness",
-			desc: "Advanced herbal formulation designed to support gut balance, digestion, and daily comfort naturally.",
-		},
-		{
-			id: 2,
-			img: "/banner-2.png",
-			title: "Calmiva+",
-			subtitle: "Stress Relief & Better Sleep",
-			desc: "A calming botanical blend crafted to support relaxation, emotional balance, and restful sleep.",
-		},
-		{
-			id: 3,
-			img: "/banner-3.png",
-			title: "Gluvora DB+ Juice",
-			subtitle: "Daily Diabetic Care Support",
-			desc: "Powerful Ayurvedic juice blend formulated to help maintain healthy glucose metabolism naturally.",
-		},
-	];
+	const { banners, loading } = useSiteData();
+	const slidesData = banners.homepage.map(banner => ({
+		id: banner._id,
+		img: banner.image,
+		title: banner.title,
+		subtitle: banner.subtitle,
+		desc: banner.subtitle,
+		buttonText: banner.buttonText,
+		buttonLink: banner.buttonLink,
+	}));
 
 	const handlePrev = () => {
 		if (swiperInstance) {
@@ -44,6 +32,11 @@ const Hero = () => {
 			swiperInstance.autoplay?.start();
 		}
 	};
+
+	if (!loading && slidesData.length === 0) return null;
+	if (slidesData.length === 0) {
+		return <section className="hero-section"><div className="hero-container animate-pulse bg-[#e8eee9] min-h-[520px]" /></section>;
+	}
 
 	return (
 		<>
@@ -105,14 +98,11 @@ const Hero = () => {
 												</p>
 
 												<div className="hero-buttons">
-													<button
-														className="hero-btn-primary"
-														disabled
-														aria-label="Coming soon"
-													>
-														Coming
-														Soon
-													</button>
+													{slide.buttonText && slide.buttonLink && (
+														<Link className="hero-btn-primary" to={slide.buttonLink}>
+															{slide.buttonText}
+														</Link>
+													)}
 													{/* <button className="hero-btn-secondary" disabled aria-label="Coming soon">
 												Coming Soon
 											</button> */}

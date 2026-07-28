@@ -1,22 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import { useSiteData } from '../../context/SiteDataContext';
 
 const OfferModal = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [phone, setPhone] = useState('');
   const [agree, setAgree] = useState(true);
   const [submitted, setSubmitted] = useState(false);
+  const { banners, loading } = useSiteData();
+  const offer = banners.popup[0];
 
   useEffect(() => {
     // Show modal after 1.5 seconds if it hasn't been shown in this session
     const hasShown = sessionStorage.getItem('veadya_offer_shown');
-    if (!hasShown) {
+    if (!loading && offer && !hasShown) {
       const timer = setTimeout(() => {
         setIsOpen(true);
         sessionStorage.setItem('veadya_offer_shown', 'true');
       }, 1500);
       return () => clearTimeout(timer);
     }
-  }, []);
+  }, [loading, offer]);
 
   const handleClose = () => {
     setIsOpen(false);
@@ -31,7 +34,7 @@ const OfferModal = () => {
     }, 2000);
   };
 
-  if (!isOpen) return null;
+  if (!offer || !isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-10000 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-fade-in">
@@ -47,7 +50,7 @@ const OfferModal = () => {
 
         {/* Left column: Banner Image */}
         <div className="w-full md:w-[48%] relative min-h-[220px] md:min-h-[420px] flex flex-col justify-between p-6 bg-cover bg-center"
-          style={{ backgroundImage: "linear-gradient(rgba(17, 66, 50, 0.45) 0%, rgba(11, 26, 20, 0.85) 100%), url('/modelimg/modelimg.png')" }}>
+          style={{ backgroundImage: `linear-gradient(rgba(17, 66, 50, 0.45) 0%, rgba(11, 26, 20, 0.85) 100%), url('${offer.image}')` }}>
           <div className="flex items-center gap-2">
             <span className="text-[10px] tracking-[0.2em] font-semibold text-white/90 bg-white/15 px-3 py-1 rounded-full backdrop-blur-xs uppercase">
               Limited Offer
@@ -56,9 +59,9 @@ const OfferModal = () => {
 
           <div className="space-y-3">
             <p className="text-[12px] tracking-[0.25em] font-bold text-white/85 uppercase">Unlock</p>
-            <h3 className="text-3xl font-serif text-white leading-tight">Exclusive Offer</h3>
+            <h3 className="text-3xl font-serif text-white leading-tight">{offer.title}</h3>
             <p className="text-white/80 text-[12px] leading-relaxed">
-              Get flat 20% off on your first order. Natural Ayurvedic wellness delivered to your doorstep.
+              {offer.subtitle}
             </p>
           </div>
         </div>
@@ -113,7 +116,7 @@ const OfferModal = () => {
                 disabled={!agree || phone.length < 10}
                 className="w-full bg-primary hover:bg-primary-lt disabled:bg-gray-200 disabled:text-gray-400 text-white text-[12px] font-semibold py-3 px-6 rounded-[8px] uppercase tracking-[0.1em] shadow-sm transition-all duration-300 cursor-pointer disabled:cursor-not-allowed text-center"
               >
-                Submit
+                {offer.buttonText || 'Submit'}
               </button>
 
               {/* Disclaimer */}

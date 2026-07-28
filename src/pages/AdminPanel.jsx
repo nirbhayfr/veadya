@@ -1,9 +1,18 @@
-import React, { useState, useEffect } from 'react';
+/* eslint-disable react-hooks/immutability, react-hooks/exhaustive-deps */
+import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../utils/api';
 import { uploadToCloudinary } from '../utils/uploadToCloudinary';
 import { setProducts } from '../store/slices/productSlice';
+import {
+  AdminResourceManager,
+  AdminDashboard,
+  AdminReviews,
+  AdminSeo,
+  AdminSettings,
+} from '../components/admin/AdminResourceManager';
+import AdminAutomation from '../components/admin/AdminAutomation';
 import { 
   Package, 
   FolderTree, 
@@ -15,9 +24,34 @@ import {
   Trash2, 
   Upload, 
   X, 
-  Check, 
-  AlertCircle 
+  Check,
+  AlertCircle,
+  Sparkles
 } from 'lucide-react';
+
+const platformTabs = [
+  { id: 'dashboard', label: 'Dashboard' },
+  { id: 'users', label: 'Customers' },
+  { id: 'reviews', label: 'Reviews' },
+  { id: 'pages', label: 'Pages' },
+  { id: 'posts', label: 'Journal Posts' },
+  { id: 'postCategories', label: 'Post Categories' },
+  { id: 'banners', label: 'Banners' },
+  { id: 'menus', label: 'Menus' },
+  { id: 'contentTypes', label: 'Content Types' },
+  { id: 'contentEntries', label: 'Content Entries' },
+  { id: 'coupons', label: 'Coupons' },
+  { id: 'newsletter', label: 'Newsletter' },
+  { id: 'notifications', label: 'Notifications' },
+  { id: 'automation', label: 'WhatsApp Automation' },
+  { id: 'settings', label: 'Site Settings' },
+  { id: 'seo', label: 'SEO Tools' },
+];
+
+const resourceTabs = [
+  'categories', 'users', 'pages', 'posts', 'postCategories', 'banners', 'menus',
+  'contentTypes', 'contentEntries', 'coupons', 'newsletter', 'notifications',
+];
 
 const AdminPanel = () => {
   const navigate = useNavigate();
@@ -43,9 +77,11 @@ const AdminPanel = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editProductId, setEditProductId] = useState(null);
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [generatingDetails, setGeneratingDetails] = useState(false);
 
   const initialFormState = {
     title: '',
+    shortDescription: '',
     description: '',
     price: '',
     originalPrice: '',
@@ -139,6 +175,51 @@ const AdminPanel = () => {
     }));
   };
 
+  const canGenerateDetails = Boolean(
+    productForm.title.trim() &&
+    productForm.shortDescription.trim() &&
+    productForm.images.length
+  );
+
+  const handleGenerateDetails = async () => {
+    if (!canGenerateDetails) {
+      setErrorMsg('Upload an image and enter the product name and short description first.');
+      return;
+    }
+
+    try {
+      setGeneratingDetails(true);
+      setErrorMsg('');
+      setSuccessMsg('');
+      const res = await api.post('/product/generate-details', {
+        title: productForm.title.trim(),
+        shortDescription: productForm.shortDescription.trim(),
+        imageUrl: productForm.images[0],
+      });
+      const generated = res.data;
+      setProductForm(prev => ({
+        ...prev,
+        description: generated.description,
+        price: String(generated.price),
+        originalPrice: String(generated.originalPrice),
+        stock: String(generated.stock),
+        sku: generated.sku,
+        categoryName: generated.categoryName,
+        size: generated.size,
+        tags: generated.tags.join(', '),
+        bg: generated.bg,
+        accent: generated.accent,
+        textColor: generated.textColor,
+        subColor: generated.subColor,
+      }));
+      setSuccessMsg('AI details generated. Review or edit them before saving.');
+    } catch (err) {
+      setErrorMsg(err.message || 'Failed to generate product details.');
+    } finally {
+      setGeneratingDetails(false);
+    }
+  };
+
   // Save Product (Create or Update)
   const handleSaveProduct = async (e) => {
     e.preventDefault();
@@ -230,6 +311,7 @@ const AdminPanel = () => {
     setEditProductId(p._id);
     setProductForm({
       title: p.title || '',
+      shortDescription: p.description || '',
       description: p.description || '',
       price: p.price || '',
       originalPrice: p.originalPrice || '',
@@ -374,6 +456,49 @@ const AdminPanel = () => {
     }
   };
 
+  const handleSeedCompleteWebsite = async () => {
+    if (!window.confirm('Initialize the complete demo website? Existing products and categories will be replaced; CMS content will be safely created or updated. Customer and order data will not be touched.')) return;
+
+    try {
+      setActionLoading(true);
+      setErrorMsg('');
+      await api.post('/product/seed');
+      const siteRes = await api.post('/seed/site-content');
+      setSuccessMsg(siteRes.message || 'Complete website seeded successfully!');
+      window.dispatchEvent(new Event('veadya-site-data-refresh'));
+      await fetchData();
+
+      const refreshRes = await api.get('/product?limit=100');
+      if (refreshRes.data) {
+        dispatch(setProducts(refreshRes.data.map(p => ({
+          id: p.sku && p.sku.startsWith('VEADYA-') ? parseInt(p.sku.replace('VEADYA-', '')) : p._id,
+          _id: p._id,
+          name: p.title,
+          price: p.price,
+          image: p.images?.[0]?.url || '/p-1.png',
+          category: p.categoryName,
+          tag: p.categoryName,
+          problem: p.tags?.[0] || 'General Wellness',
+          shortDescription: p.description,
+          originalPrice: p.originalPrice,
+          size: p.size,
+          notes: p.notes,
+          sku: p.sku,
+          bg: p.bg,
+          accent: p.accent,
+          textColor: p.textColor,
+          subColor: p.subColor,
+          rating: p.ratingAverage,
+          reviews: p.ratingCount,
+        }))));
+      }
+    } catch (err) {
+      setErrorMsg(err.message || 'Failed to seed the complete website.');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
   const getOrderCustomerName = (order) => {
     const userName = `${order.user?.firstName || ''} ${order.user?.lastName || ''}`.trim();
     return userName || order.shippingAddress?.name || 'Guest customer';
@@ -414,7 +539,7 @@ const AdminPanel = () => {
     <div className="min-h-screen bg-gray-50 flex" style={{ fontFamily: '"Jost", sans-serif' }}>
       
       {/* ── Left Sidebar Navigation ── */}
-      <aside className="w-64 bg-[#114232] text-white flex flex-col shadow-xl">
+      <aside className="w-64 bg-[#114232] text-white flex flex-col shadow-xl max-h-screen sticky top-0">
         <div className="p-6 border-b border-white/10 flex items-center justify-between">
           <div>
             <h1 className="text-xl font-serif font-bold text-[#e2d5c3] tracking-wide">Veadya Admin</h1>
@@ -422,7 +547,7 @@ const AdminPanel = () => {
           </div>
         </div>
 
-        <nav className="flex-1 p-4 space-y-2 mt-4">
+        <nav className="flex-1 p-4 space-y-2 mt-4 overflow-y-auto">
           <button 
             onClick={() => { setActiveTab('products'); setShowForm(false); }}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-sm font-medium ${activeTab === 'products' ? 'bg-[#efdbbb] text-[#114232] shadow-md' : 'hover:bg-white/10 text-white/80'}`}
@@ -455,6 +580,20 @@ const AdminPanel = () => {
             Orders Management
           </button>
 
+          <div className="pt-4 pb-1 px-3 text-[9px] uppercase tracking-[0.22em] text-white/35 font-semibold">
+            Platform &amp; Content
+          </div>
+          {platformTabs.map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => { setActiveTab(tab.id); setShowForm(false); }}
+              className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all text-sm font-medium ${activeTab === tab.id ? 'bg-[#efdbbb] text-[#114232] shadow-md' : 'hover:bg-white/10 text-white/80'}`}
+            >
+              <FolderTree size={16} />
+              {tab.label}
+            </button>
+          ))}
+
           <button 
             onClick={() => { setActiveTab('actions'); setShowForm(false); }}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-sm font-medium ${activeTab === 'actions' ? 'bg-[#efdbbb] text-[#114232] shadow-md' : 'hover:bg-white/10 text-white/80'}`}
@@ -480,7 +619,9 @@ const AdminPanel = () => {
               {activeTab === 'products' ? 'Products Catalog' : 
                activeTab === 'categories' ? 'Categories Structure' : 
                activeTab === 'messages' ? 'Inbound Inquiries' :
-               activeTab === 'orders' ? 'Orders Management' : 'System Operations'}
+               activeTab === 'orders' ? 'Orders Management' :
+               activeTab === 'actions' ? 'System Operations' :
+               platformTabs.find(tab => tab.id === activeTab)?.label || 'Admin Control Center'}
             </h2>
             <p className="text-xs text-gray-400 mt-1">Manage the online botanical apothecary store.</p>
           </div>
@@ -558,14 +699,15 @@ const AdminPanel = () => {
                       </div>
 
                       <div className="space-y-2 col-span-2">
-                        <label className="text-xs uppercase tracking-wider text-[#114232] font-semibold block">Description</label>
+                        <label className="text-xs uppercase tracking-wider text-[#114232] font-semibold block">Short Description *</label>
                         <textarea 
-                          name="description" 
-                          value={productForm.description} 
+                          name="shortDescription" 
+                          value={productForm.shortDescription} 
                           onChange={handleFormChange} 
-                          placeholder="Specify the benefits and natural origins of the formula..."
+                          placeholder="Briefly describe what the product is and its main purpose..."
                           rows="3"
                           className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+                          required
                         />
                       </div>
 
@@ -647,7 +789,7 @@ const AdminPanel = () => {
 
                     {/* Image Upload Block via Cloudinary */}
                     <div className="space-y-4 pt-4 border-t border-gray-50">
-                      <label className="text-xs uppercase tracking-wider text-[#114232] font-semibold block">Product Studio Images</label>
+                      <label className="text-xs uppercase tracking-wider text-[#114232] font-semibold block">Product Studio Images *</label>
                       
                       <div className="grid grid-cols-5 gap-4">
                         {productForm.images.map((imgUrl, index) => (
@@ -682,6 +824,42 @@ const AdminPanel = () => {
                             )}
                           </label>
                         )}
+                      </div>
+                    </div>
+
+                    {!isEditing && (
+                      <div className="rounded-2xl border border-[#114232]/15 bg-[#f6f3ed] p-5 flex items-center justify-between gap-5">
+                        <div>
+                          <p className="text-sm font-semibold text-[#114232] flex items-center gap-2">
+                            <Sparkles size={16} /> Fill remaining details with AI
+                          </p>
+                          <p className="text-xs text-gray-500 mt-1">
+                            Add an image, product name, and short description. AI will fill the rest of the form.
+                          </p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={handleGenerateDetails}
+                          disabled={!canGenerateDetails || generatingDetails || uploadingImage}
+                          className="shrink-0 bg-[#114232] text-[#efdbbb] hover:bg-[#1a5b46] px-5 py-3 rounded-xl flex items-center gap-2 text-xs uppercase tracking-widest font-semibold transition-all shadow-md disabled:opacity-40 disabled:cursor-not-allowed"
+                        >
+                          <Sparkles size={15} />
+                          {generatingDetails ? 'Generating...' : 'Generate details'}
+                        </button>
+                      </div>
+                    )}
+
+                    <div className="grid grid-cols-2 gap-6">
+                      <div className="space-y-2 col-span-2">
+                        <label className="text-xs uppercase tracking-wider text-[#114232] font-semibold block">AI Catalog Description</label>
+                        <textarea
+                          name="description"
+                          value={productForm.description}
+                          onChange={handleFormChange}
+                          placeholder="Generated catalog copy will appear here..."
+                          rows="3"
+                          className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+                        />
                       </div>
                     </div>
 
@@ -805,7 +983,7 @@ const AdminPanel = () => {
           )}
 
           {/* ── CATEGORIES TAB ── */}
-          {activeTab === 'categories' && (
+          {activeTab === 'categoriesLegacy' && (
             <div className="bg-white border border-gray-100 rounded-3xl overflow-hidden shadow-xs">
               {loading ? (
                 <div className="p-12 text-center text-gray-400 text-sm">Fetching categories catalog...</div>
@@ -988,6 +1166,15 @@ const AdminPanel = () => {
             </div>
           )}
 
+          {resourceTabs.includes(activeTab) && (
+            <AdminResourceManager resource={activeTab} />
+          )}
+          {activeTab === 'dashboard' && <AdminDashboard />}
+          {activeTab === 'reviews' && <AdminReviews />}
+          {activeTab === 'automation' && <AdminAutomation />}
+          {activeTab === 'settings' && <AdminSettings />}
+          {activeTab === 'seo' && <AdminSeo />}
+
           {/* ── SYSTEM ACTIONS TAB ── */}
           {activeTab === 'actions' && (
             <div className="max-w-2xl mx-auto bg-white border border-gray-100 rounded-3xl p-8 shadow-xs text-center space-y-6">
@@ -1003,6 +1190,14 @@ const AdminPanel = () => {
               </div>
 
               <div className="pt-4">
+                <button
+                  onClick={handleSeedCompleteWebsite}
+                  disabled={actionLoading}
+                  className="bg-[#b66a3c] hover:bg-[#9d5831] text-white px-6 py-3.5 rounded-xl text-xs uppercase tracking-widest font-semibold transition-all shadow-md disabled:opacity-50 inline-flex items-center gap-2 mr-3"
+                >
+                  <Sparkles size={16} />
+                  {actionLoading ? 'Initializing website...' : 'Seed Complete Website'}
+                </button>
                 <button
                   onClick={handleSeedDatabase}
                   disabled={actionLoading}

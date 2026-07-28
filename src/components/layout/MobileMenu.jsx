@@ -1,21 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { toggleMenu } from '../../store/slices/uiSlice';
 import { logout } from '../../store/slices/authSlice';
 import { Link, useLocation } from 'react-router-dom';
-
-const shopCategories = [
-  { label: 'Juice',   path: '/shop?category=Juice',   icon: 'fa-solid fa-droplet' },
-  { label: 'Capsule', path: '/shop?category=Capsule', icon: 'fa-solid fa-capsules' },
-  { label: 'Drop',    path: '/shop?category=Drop',    icon: 'fa-solid fa-flask-vial' },
-];
-
-const navLinks = [
-  { label: 'Home',       path: '/' },
-  { label: 'About',      path: '/about' },
-  { label: 'Our Story',  path: '/story' },
-  { label: 'Contact Us', path: '/contact' },
-];
+import { useSiteData } from '../../context/SiteDataContext';
 
 const MobileMenu = () => {
   const dispatch   = useDispatch();
@@ -23,6 +11,13 @@ const MobileMenu = () => {
   const { isMenuOpen }         = useSelector((state) => state.ui);
   const { user, isAuthenticated } = useSelector((state) => state.auth);
   const [shopOpen, setShopOpen] = useState(false);
+  const { settings, menus, categories } = useSiteData();
+  const navLinks = menus.mobile.map(item => ({ label: item.label, path: item.url }));
+  const shopCategories = categories.filter(category => category.status !== 'inactive').map(category => ({
+    label: category.name,
+    path: `/shop?category=${encodeURIComponent(category.name)}`,
+    icon: 'fa-solid fa-leaf',
+  }));
 
   if (!isMenuOpen) return null;
 
@@ -41,7 +36,7 @@ const MobileMenu = () => {
         <div className="px-6 py-5 flex justify-between items-center"
           style={{ background: 'linear-gradient(135deg,#f5f9f8 0%,#eaf3f2 100%)', borderBottom: '1px solid rgba(1,114,110,0.1)' }}>
           <Link to="/" className="flex items-center" onClick={close}>
-            <img src="/logo/bgremovepng.png" alt="Veadya" style={{ height: '30px', width: 'auto', display: 'block' }} />
+            <img src={settings.logo || "/logo/bgremovepng.png"} alt={settings.siteName || "Veadya"} style={{ height: '30px', width: 'auto', display: 'block' }} />
           </Link>
           <button onClick={close}
             className="w-9 h-9 flex items-center justify-center rounded-full transition-all hover:bg-primary/10"
