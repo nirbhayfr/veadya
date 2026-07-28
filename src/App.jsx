@@ -20,6 +20,7 @@ import { login, logout } from "./store/slices/authSlice";
 import { setProducts } from "./store/slices/productSlice";
 import ScrollToTop from "./utils/scrollToTop";
 import { SiteDataProvider } from "./context/SiteDataContext";
+import { resolveMediaUrl } from "./utils/mediaUrl";
 
 function App() {
 	const dispatch = useDispatch();
@@ -38,7 +39,7 @@ function App() {
 						_id: p._id,
 						name: p.title,
 						price: p.price,
-						image: p.images?.[0]?.url || "/p-1.png",
+						image: resolveMediaUrl(p.images?.[0]?.url || "/p-1.png"),
 						category: p.categoryName,
 						tag: p.categoryName,
 						problem: p.tags?.[0] || "General Wellness",

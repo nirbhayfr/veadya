@@ -5,6 +5,7 @@ import "swiper/css";
 import "swiper/css/effect-fade";
 import { Link } from "react-router-dom";
 import { useSiteData } from "../../context/SiteDataContext";
+import { withImageFallback } from "../../utils/mediaUrl";
 
 const Hero = () => {
 	const [swiperInstance, setSwiperInstance] = useState(null);
@@ -64,6 +65,7 @@ const Hero = () => {
 										<div className="hero-slide-bg">
 											<img
 												src={slide.img}
+												onError={withImageFallback("/banner-1.png")}
 												alt={slide.title}
 												className="hero-bg-img"
 											/>

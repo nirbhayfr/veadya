@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { AlertCircle, Check, Edit2, Plus, RefreshCw, Trash2, Upload, X } from 'lucide-react';
 import { api } from '../../utils/api';
 import { uploadToCloudinary } from '../../utils/uploadToCloudinary';
+import { resolveMediaUrl, withImageFallback } from '../../utils/mediaUrl';
 
 const inputClass = 'w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#114232]/20';
 
@@ -189,7 +190,7 @@ const Field = ({ field, value, onChange, uploading, setUploading }) => {
   }
   if (field.type === 'image') {
     return <div className="space-y-3">
-      {value && <div className="relative w-36 h-24 rounded-xl overflow-hidden border border-gray-200"><img src={value} alt="" className="w-full h-full object-cover" /><button type="button" onClick={() => onChange('')} className="absolute top-1 right-1 bg-black/70 text-white rounded-full p-1"><X size={12} /></button></div>}
+      {value && <div className="relative w-36 h-24 rounded-xl overflow-hidden border border-gray-200"><img src={resolveMediaUrl(value)} onError={withImageFallback()} alt="" className="w-full h-full object-cover" /><button type="button" onClick={() => onChange('')} className="absolute top-1 right-1 bg-black/70 text-white rounded-full p-1"><X size={12} /></button></div>}
       <label className={`inline-flex items-center gap-2 border border-dashed border-gray-300 rounded-xl px-4 py-3 text-xs font-semibold cursor-pointer ${uploading ? 'opacity-50' : ''}`}>
         <Upload size={15} /> {uploading ? 'Uploading…' : 'Upload image'}
         <input type="file" accept="image/*" className="hidden" disabled={uploading} onChange={async e => {

@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/set-state-in-effect, react-refresh/only-export-components */
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { api } from '../utils/api';
+import { resolveMediaUrl } from '../utils/mediaUrl';
 
 const SiteDataContext = createContext(null);
 
@@ -38,21 +39,34 @@ export const SiteDataProvider = ({ children }) => {
     ]));
     const failures = results.filter(result => result.status === 'rejected');
     setData({
-      settings: resolved.settings || {},
+      settings: {
+        ...(resolved.settings || {}),
+        logo: resolveMediaUrl(resolved.settings?.logo),
+        favicon: resolveMediaUrl(resolved.settings?.favicon),
+      },
       menus: {
         header: resolved.headerMenu?.items || [],
         footer: resolved.footerMenu?.items || [],
         mobile: resolved.mobileMenu?.items || [],
       },
       banners: {
-        homepage: Array.isArray(resolved.homepageBanners) ? resolved.homepageBanners : [],
-        category: Array.isArray(resolved.categoryBanners) ? resolved.categoryBanners : [],
-        sidebar: Array.isArray(resolved.sidebarBanners) ? resolved.sidebarBanners : [],
-        popup: Array.isArray(resolved.popupBanners) ? resolved.popupBanners : [],
+        homepage: Array.isArray(resolved.homepageBanners) ? resolved.homepageBanners.map(banner => ({ ...banner, image: resolveMediaUrl(banner.image) })) : [],
+        category: Array.isArray(resolved.categoryBanners) ? resolved.categoryBanners.map(banner => ({ ...banner, image: resolveMediaUrl(banner.image) })) : [],
+        sidebar: Array.isArray(resolved.sidebarBanners) ? resolved.sidebarBanners.map(banner => ({ ...banner, image: resolveMediaUrl(banner.image) })) : [],
+        popup: Array.isArray(resolved.popupBanners) ? resolved.popupBanners.map(banner => ({ ...banner, image: resolveMediaUrl(banner.image) })) : [],
       },
-      categories: Array.isArray(resolved.categories) ? resolved.categories : [],
+      categories: Array.isArray(resolved.categories)
+        ? resolved.categories.map(category => ({ ...category, image: resolveMediaUrl(category.image) }))
+        : [],
       contentEntries: Array.isArray(resolved.contentEntries)
-        ? resolved.contentEntries.filter(entry => entry.status === 'published')
+        ? resolved.contentEntries
+          .filter(entry => entry.status === 'published')
+          .map(entry => ({
+            ...entry,
+            data: entry.data
+              ? { ...entry.data, image: resolveMediaUrl(entry.data.image) }
+              : entry.data,
+          }))
         : [],
     });
     setError(failures.length ? `${failures.length} site content request${failures.length > 1 ? 's' : ''} failed.` : '');

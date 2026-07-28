@@ -499,6 +499,21 @@ const AdminPanel = () => {
     }
   };
 
+  const handleSeedSiteContent = async () => {
+    if (!window.confirm('Create or repair banners, menus, settings, CMS entries, pages, posts, coupons, and notifications? Products, customers, and orders will not be changed.')) return;
+    try {
+      setActionLoading(true);
+      setErrorMsg('');
+      const response = await api.post('/seed/site-content');
+      setSuccessMsg(response.message || 'Site content repaired successfully.');
+      window.dispatchEvent(new Event('veadya-site-data-refresh'));
+    } catch (err) {
+      setErrorMsg(err.message || 'Failed to seed site content.');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
   const getOrderCustomerName = (order) => {
     const userName = `${order.user?.firstName || ''} ${order.user?.lastName || ''}`.trim();
     return userName || order.shippingAddress?.name || 'Guest customer';
@@ -1190,6 +1205,14 @@ const AdminPanel = () => {
               </div>
 
               <div className="pt-4">
+                <button
+                  onClick={handleSeedSiteContent}
+                  disabled={actionLoading}
+                  className="bg-[#24715b] hover:bg-[#1d5d4b] text-white px-6 py-3.5 rounded-xl text-xs uppercase tracking-widest font-semibold transition-all shadow-md disabled:opacity-50 inline-flex items-center gap-2 mr-3"
+                >
+                  <Upload size={16} />
+                  {actionLoading ? 'Repairing content...' : 'Seed / Repair Site Content'}
+                </button>
                 <button
                   onClick={handleSeedCompleteWebsite}
                   disabled={actionLoading}

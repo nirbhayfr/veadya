@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useSiteData } from "../../context/SiteDataContext";
 import { api } from "../../utils/api";
+import { withImageFallback } from "../../utils/mediaUrl";
 
 const Footer = () => {
 	const { settings, menus } = useSiteData();
@@ -30,6 +31,7 @@ const Footer = () => {
 							>
 								<img
 									src={settings.logo || "/logo/bgremovepng.png"}
+									onError={withImageFallback("/logo/bgremovepng.png")}
 									alt={settings.siteName || "Veadya"}
 									className="footer-logo-img"
 								/>

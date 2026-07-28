@@ -8,6 +8,7 @@ import {
 } from "../../store/slices/uiSlice";
 import { logout } from "../../store/slices/authSlice";
 import { useSiteData } from "../../context/SiteDataContext";
+import { withImageFallback } from "../../utils/mediaUrl";
 
 const Header = () => {
 	const location = useLocation();
@@ -88,6 +89,7 @@ const Header = () => {
 					<Link to="/" className="site-logo flex items-center">
 						<img
 							src={settings.logo || "/logo/bgremovepng.png"}
+							onError={withImageFallback("/logo/bgremovepng.png")}
 							alt={settings.siteName || "Veadya"}
 							style={{
 								height: "54px",
@@ -191,6 +193,7 @@ const Header = () => {
 																		src={
 																			cat.img
 																		}
+																		onError={withImageFallback()}
 																		alt={
 																			cat.name
 																		}

@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { withImageFallback } from '../../utils/mediaUrl';
 
 const ProductCard = ({ product, isDark = false }) => {
   if (isDark) {
@@ -8,7 +9,8 @@ const ProductCard = ({ product, isDark = false }) => {
         <div className="aspect-square overflow-hidden relative">
           <Link to={`/product/${product.id}`} className="w-full h-full block">
             <img 
-              src={product.image} 
+              src={product.image}
+              onError={withImageFallback()}
               alt={product.name} 
               className="w-full h-full object-cover transition-transform duration-[1.5s] ease-out group-hover:scale-[1.05]" 
             />
@@ -57,6 +59,7 @@ const ProductCard = ({ product, isDark = false }) => {
         <Link to={`/product/${product.id}`} className="prod-card-img-wrap" style={{ display: 'block', textDecoration: 'none' }}>
           <img
             src={product.image}
+            onError={withImageFallback()}
             alt={product.name}
             className="prod-card-img"
           />
