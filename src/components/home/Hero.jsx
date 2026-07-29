@@ -4,16 +4,28 @@ import { Autoplay, EffectFade } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/effect-fade";
 import { Link } from "react-router-dom";
-import { useSiteData } from "../../context/SiteDataContext";
+import { useContentEntries, useSiteData } from "../../context/SiteDataContext";
 import { withImageFallback } from "../../utils/mediaUrl";
 
 const Hero = () => {
 	const [swiperInstance, setSwiperInstance] = useState(null);
 	const { banners, loading } = useSiteData();
+	const trustEntries = useContentEntries("trust-point");
+	const trustPoints = trustEntries.length
+		? trustEntries
+			.map(entry => entry.data)
+			.sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+		: [
+			{ title: "100% Natural", description: "Sourced directly from earth's bounty.", icon: "fa-solid fa-seedling" },
+			{ title: "GMP Certified", description: "Highest global safety standards.", icon: "fa-solid fa-shield-halved" },
+			{ title: "No Chemicals", description: "Pure botanicals, nothing artificial.", icon: "fa-solid fa-flask-vial" },
+			{ title: "Thousands Trust", description: "Join our community of wellness.", icon: "fa-solid fa-users" },
+		];
 	const slidesData = banners.homepage.map(banner => ({
 		id: banner._id,
 		img: banner.image,
 		title: banner.title,
+		eyebrow: banner.eyebrow,
 		subtitle: banner.subtitle,
 		desc: banner.subtitle,
 		buttonText: banner.buttonText,
@@ -80,9 +92,7 @@ const Hero = () => {
 												className={`hero-content ${isActive ? "is-active" : ""}`}
 											>
 												<p className="hero-tag">
-													Premium
-													Ayurvedic
-													Wellness
+													{slide.eyebrow || "Premium Ayurvedic Wellness"}
 												</p>
 
 												<h1 className="hero-title">
@@ -141,60 +151,17 @@ const Hero = () => {
 			<section className="trust-section">
 				<div className="section-container">
 					<div className="trust-bar">
-						<div className="trust-item trust-item-border-r">
-							<div className="trust-icon-wrap">
-								<i className="fa-solid fa-seedling trust-icon" />
+						{trustPoints.map((point, index) => (
+							<div key={`${point.title}-${index}`} className={`trust-item ${index < trustPoints.length - 1 ? "trust-item-border-r" : ""}`}>
+								<div className="trust-icon-wrap">
+									<i className={`${point.icon || "fa-solid fa-leaf"} trust-icon`} />
+								</div>
+								<div>
+									<p className="trust-title">{point.title}</p>
+									<p className="trust-desc">{point.description}</p>
+								</div>
 							</div>
-							<div>
-								<p className="trust-title">
-									100% Natural
-								</p>
-								<p className="trust-desc">
-									Sourced directly from earth's
-									bounty.
-								</p>
-							</div>
-						</div>
-						<div className="trust-item trust-item-border-r">
-							<div className="trust-icon-wrap">
-								<i className="fa-solid fa-shield-halved trust-icon" />
-							</div>
-							<div>
-								<p className="trust-title">
-									GMP Certified
-								</p>
-								<p className="trust-desc">
-									Highest global safety standards.
-								</p>
-							</div>
-						</div>
-						<div className="trust-item trust-item-border-r">
-							<div className="trust-icon-wrap">
-								<i className="fa-solid fa-flask-vial trust-icon" />
-							</div>
-							<div>
-								<p className="trust-title">
-									No Chemicals
-								</p>
-								<p className="trust-desc">
-									Pure botanicals, nothing
-									artificial.
-								</p>
-							</div>
-						</div>
-						<div className="trust-item">
-							<div className="trust-icon-wrap">
-								<i className="fa-solid fa-users trust-icon" />
-							</div>
-							<div>
-								<p className="trust-title">
-									Thousands Trust
-								</p>
-								<p className="trust-desc">
-									Join our community of wellness.
-								</p>
-							</div>
-						</div>
+						))}
 					</div>
 				</div>
 			</section>

@@ -1,11 +1,12 @@
-import React from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import ProductCard from '../shop/ProductCard';
 
 const Products = () => {
   const products = useSelector((state) => state.products.items);
-  const homeProducts = products.slice(0, 5); // Show only 5 products
+  // The homepage grid owns the first half of the catalog. The collection
+  // carousel renders the remaining products so an API product appears once.
+  const homeProducts = products.slice(0, 4);
 
   return (
     <section className="products-section">

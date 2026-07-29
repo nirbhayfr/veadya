@@ -31,7 +31,15 @@ function App() {
 			try {
 				const res = await api.get("/product?limit=100");
 				if (res.data) {
-					const normalized = res.data.map((p) => ({
+					const uniqueProducts = [
+						...new Map(
+							res.data.map((product) => [
+								String(product._id || product.sku),
+								product,
+							]),
+						).values(),
+					];
+					const normalized = uniqueProducts.map((p) => ({
 						id:
 							p.sku && p.sku.startsWith("VEADYA-")
 								? parseInt(p.sku.replace("VEADYA-", ""))

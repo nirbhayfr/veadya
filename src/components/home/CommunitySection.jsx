@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useState, useEffect, useRef } from 'react';
+import { useHomepageSection } from '../../context/SiteDataContext';
 
 const communityData = [
   {
@@ -60,6 +62,7 @@ const communityData = [
 const CARDS_PER_PAGE = 3;
 
 const CommunitySection = () => {
+  const content = useHomepageSection('community') || {};
   const [currentIndex, setCurrentIndex] = useState(0);
   const [pageOffset, setPageOffset] = useState(0);
   const timerRef = useRef(null);
@@ -101,13 +104,11 @@ const CommunitySection = () => {
       <div className="section-container">
         <div className="section-header">
           <p className="section-eyebrow">
-            <i className="fa-solid fa-spa"></i> Customer Perspectives
-            <span style={{ opacity: 0.45 }}> · </span> Ancient Wisdom Proven
+            <i className="fa-solid fa-spa"></i> {content.eyebrow || 'Customer Perspectives · Ancient Wisdom Proven'}
           </p>
-          <h2 className="section-title">Trusted by Our Community</h2>
+          <h2 className="section-title">{content.title || 'Trusted by Our Community'}</h2>
           <p className="section-desc">
-            Every testimony is a ritual completed. Every review is a life
-            touched by botanical wisdom.
+            {content.description || 'Every testimony is a ritual completed. Every review is a life touched by botanical wisdom.'}
           </p>
         </div>
         <div className="community-grid">

@@ -53,7 +53,7 @@ const OfferModal = () => {
           style={{ backgroundImage: `linear-gradient(rgba(17, 66, 50, 0.45) 0%, rgba(11, 26, 20, 0.85) 100%), url('${offer.image}')` }}>
           <div className="flex items-center gap-2">
             <span className="text-[10px] tracking-[0.2em] font-semibold text-white/90 bg-white/15 px-3 py-1 rounded-full backdrop-blur-xs uppercase">
-              Limited Offer
+              {offer.eyebrow || 'Limited Offer'}
             </span>
           </div>
 

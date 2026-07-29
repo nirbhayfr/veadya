@@ -5,7 +5,23 @@ import { api } from "../../utils/api";
 import { withImageFallback } from "../../utils/mediaUrl";
 
 const Footer = () => {
-	const { settings, menus } = useSiteData();
+	const { settings, menus, pages } = useSiteData();
+	const footerMenu = [
+		...new Map(
+			[
+				...menus.footer,
+				...pages.map((page, index) => ({
+					label: page.title,
+					url: `/pages/${page.slug}`,
+					order: 100 + index,
+					target: "_self",
+				})),
+			].map((item) => [
+				item.url,
+				item,
+			]),
+		).values(),
+	].sort((a, b) => (a.order || 0) - (b.order || 0));
 	const [newsletterEmail, setNewsletterEmail] = useState("");
 	const [newsletterMessage, setNewsletterMessage] = useState("");
 	const subscribe = async event => {
@@ -100,12 +116,11 @@ const Footer = () => {
 						{/* Col 2: Explore */}
 						<div className="footer-explore-col">
 							<p className="footer-col-title">Explore</p>
-							{menus.footer.length > 0 && <ul className="footer-nav-list">
-								{[...menus.footer].sort((a, b) => (a.order || 0) - (b.order || 0)).map(item => (
+							{footerMenu.length > 0 ? <ul className="footer-nav-list">
+								{footerMenu.map(item => (
 									<li key={`${item.label}-${item.url}`}><Link to={item.url} target={item.target}>{item.label} <i className="fa-solid fa-arrow-right"></i></Link></li>
 								))}
-							</ul>}
-							<ul className={`footer-nav-list ${menus.footer.length ? "hidden" : ""}`}>
+							</ul> : <ul className="footer-nav-list">
 								<li>
 									<Link to="/">
 										Home{" "}
@@ -125,10 +140,10 @@ const Footer = () => {
 									</Link>
 								</li>
 								<li>
-									<a href="#">
+									<Link to="/journal">
 										The Journal{" "}
 										<i className="fa-solid fa-arrow-right"></i>
-									</a>
+									</Link>
 								</li>
 								<li>
 									<Link to="/contact">
@@ -136,7 +151,7 @@ const Footer = () => {
 										<i className="fa-solid fa-arrow-right"></i>
 									</Link>
 								</li>
-							</ul>
+							</ul>}
 						</div>
 
 						{/* Col 3: Contact + Mosaic */}

@@ -5,12 +5,23 @@ import { resolveMediaUrl } from '../utils/mediaUrl';
 
 const SiteDataContext = createContext(null);
 
+const uniqueRecords = (records = [], fallbackKey) => {
+  const seen = new Set();
+  return records.filter(record => {
+    const key = record?._id || fallbackKey?.(record);
+    if (!key || seen.has(String(key))) return false;
+    seen.add(String(key));
+    return true;
+  });
+};
+
 const initialState = {
   settings: {},
   menus: { header: [], footer: [], mobile: [] },
   banners: { homepage: [], category: [], sidebar: [], popup: [] },
   categories: [],
   contentEntries: [],
+  pages: [],
 };
 
 export const SiteDataProvider = ({ children }) => {
@@ -31,6 +42,7 @@ export const SiteDataProvider = ({ children }) => {
       ['popupBanners', api.get('/banner/position/popup')],
       ['categories', api.get('/category')],
       ['contentEntries', api.get('/content')],
+      ['pages', api.get('/page')],
     ];
     const results = await Promise.allSettled(requests.map(([, request]) => request));
     const resolved = Object.fromEntries(results.map((result, index) => [
@@ -50,16 +62,16 @@ export const SiteDataProvider = ({ children }) => {
         mobile: resolved.mobileMenu?.items || [],
       },
       banners: {
-        homepage: Array.isArray(resolved.homepageBanners) ? resolved.homepageBanners.map(banner => ({ ...banner, image: resolveMediaUrl(banner.image) })) : [],
-        category: Array.isArray(resolved.categoryBanners) ? resolved.categoryBanners.map(banner => ({ ...banner, image: resolveMediaUrl(banner.image) })) : [],
-        sidebar: Array.isArray(resolved.sidebarBanners) ? resolved.sidebarBanners.map(banner => ({ ...banner, image: resolveMediaUrl(banner.image) })) : [],
-        popup: Array.isArray(resolved.popupBanners) ? resolved.popupBanners.map(banner => ({ ...banner, image: resolveMediaUrl(banner.image) })) : [],
+        homepage: Array.isArray(resolved.homepageBanners) ? uniqueRecords(resolved.homepageBanners, banner => `${banner.position}:${banner.title}`).map(banner => ({ ...banner, image: resolveMediaUrl(banner.image) })) : [],
+        category: Array.isArray(resolved.categoryBanners) ? uniqueRecords(resolved.categoryBanners, banner => `${banner.position}:${banner.title}`).map(banner => ({ ...banner, image: resolveMediaUrl(banner.image) })) : [],
+        sidebar: Array.isArray(resolved.sidebarBanners) ? uniqueRecords(resolved.sidebarBanners, banner => `${banner.position}:${banner.title}`).map(banner => ({ ...banner, image: resolveMediaUrl(banner.image) })) : [],
+        popup: Array.isArray(resolved.popupBanners) ? uniqueRecords(resolved.popupBanners, banner => `${banner.position}:${banner.title}`).map(banner => ({ ...banner, image: resolveMediaUrl(banner.image) })) : [],
       },
       categories: Array.isArray(resolved.categories)
-        ? resolved.categories.map(category => ({ ...category, image: resolveMediaUrl(category.image) }))
+        ? uniqueRecords(resolved.categories, category => category.slug || category.name).map(category => ({ ...category, image: resolveMediaUrl(category.image) }))
         : [],
       contentEntries: Array.isArray(resolved.contentEntries)
-        ? resolved.contentEntries
+        ? uniqueRecords(resolved.contentEntries, entry => `${entry.contentType?.slug}:${entry.data?.seedKey || JSON.stringify(entry.data)}`)
           .filter(entry => entry.status === 'published')
           .map(entry => ({
             ...entry,
@@ -67,6 +79,12 @@ export const SiteDataProvider = ({ children }) => {
               ? { ...entry.data, image: resolveMediaUrl(entry.data.image) }
               : entry.data,
           }))
+        : [],
+      pages: Array.isArray(resolved.pages)
+        ? uniqueRecords(
+          resolved.pages.filter(page => page.status === 'published'),
+          page => page.slug,
+        )
         : [],
     });
     setError(failures.length ? `${failures.length} site content request${failures.length > 1 ? 's' : ''} failed.` : '');
@@ -88,4 +106,22 @@ export const useSiteData = () => {
   const context = useContext(SiteDataContext);
   if (!context) throw new Error('useSiteData must be used inside SiteDataProvider');
   return context;
+};
+
+export const useContentEntries = (typeSlug) => {
+  const { contentEntries } = useSiteData();
+  return useMemo(
+    () => contentEntries.filter(entry => entry.contentType?.slug === typeSlug),
+    [contentEntries, typeSlug],
+  );
+};
+
+export const useHomepageSection = (sectionKey) => {
+  const entries = useContentEntries('homepage-section');
+  return useMemo(
+    () => entries.find(entry =>
+      entry.data?.section === sectionKey || entry.data?.seedKey === sectionKey,
+    )?.data,
+    [entries, sectionKey],
+  );
 };

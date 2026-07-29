@@ -73,7 +73,16 @@ export const resourceConfigs = {
       { name: 'excerpt', label: 'Excerpt', type: 'textarea', optional: true },
       { name: 'content', label: 'Article Content', type: 'textarea', required: true, wide: true },
       { name: 'featuredImage', label: 'Featured Image', type: 'image', optional: true },
-      { name: 'postCategory', label: 'Post Category ID', optional: true },
+      {
+        name: 'postCategory',
+        label: 'Post Category',
+        type: 'select',
+        optionsEndpoint: '/post-category',
+        optionLabel: 'name',
+        optionValue: '_id',
+        placeholder: 'Select a category',
+        optional: true,
+      },
       { name: 'author', label: 'Author ID', optional: true },
       { name: 'status', label: 'Status', type: 'select', options: ['draft', 'published'], default: 'draft' },
       { name: 'publishedAt', label: 'Published Date', type: 'date', optional: true },
@@ -95,7 +104,9 @@ export const resourceConfigs = {
     title: 'Banners & Campaigns', endpoint: '/banner', singular: 'Banner',
     columns: [['title', 'Title'], ['position', 'Position'], ['status', 'Status'], ['order', 'Order']],
     fields: [
-      { name: 'title', label: 'Title', required: true }, { name: 'subtitle', label: 'Subtitle', type: 'textarea', optional: true },
+      { name: 'title', label: 'Title', required: true },
+      { name: 'eyebrow', label: 'Eyebrow / Tagline', optional: true },
+      { name: 'subtitle', label: 'Subtitle', type: 'textarea', optional: true },
       { name: 'image', label: 'Banner Image', type: 'image', required: true },
       { name: 'buttonText', label: 'Button Text', optional: true }, { name: 'buttonLink', label: 'Button Link', optional: true },
       { name: 'position', label: 'Position', type: 'select', options: ['homepage', 'category', 'sidebar', 'popup'], default: 'homepage' },
@@ -174,13 +185,19 @@ export const resourceConfigs = {
   },
 };
 
-const Field = ({ field, value, onChange, uploading, setUploading }) => {
+const Field = ({ field, value, onChange, uploading, setUploading, options }) => {
   if (field.type === 'textarea' || field.type === 'json') {
     return <textarea rows={field.type === 'json' ? 9 : 4} className={`${inputClass} font-${field.type === 'json' ? 'mono' : 'sans'}`} value={value} onChange={e => onChange(e.target.value)} required={field.required} />;
   }
   if (field.type === 'select') {
+    const selectOptions = options || field.options || [];
     return <select className={inputClass} value={value} onChange={e => onChange(e.target.value)} required={field.required}>
-      {field.options.map(option => <option key={option} value={option}>{option}</option>)}
+      {field.placeholder && <option value="">{field.placeholder}</option>}
+      {selectOptions.map(option => {
+        const optionValue = typeof option === 'object' ? option[field.optionValue || 'value'] : option;
+        const optionLabel = typeof option === 'object' ? option[field.optionLabel || 'label'] : option;
+        return <option key={optionValue} value={optionValue}>{optionLabel}</option>;
+      })}
     </select>;
   }
   if (field.type === 'boolean') {
@@ -214,6 +231,7 @@ export const AdminResourceManager = ({ resource }) => {
   const [uploading, setUploading] = useState(false);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(() => emptyForm(config));
+  const [fieldOptions, setFieldOptions] = useState({});
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
@@ -226,6 +244,22 @@ export const AdminResourceManager = ({ resource }) => {
   };
 
   useEffect(() => { load(); }, [resource]);
+  useEffect(() => {
+    const dynamicFields = config.fields.filter(field => field.optionsEndpoint);
+    if (!dynamicFields.length) {
+      setFieldOptions({});
+      return;
+    }
+
+    Promise.all(
+      dynamicFields.map(async field => {
+        const response = await api.get(field.optionsEndpoint);
+        return [field.name, Array.isArray(response.data) ? response.data : []];
+      }),
+    )
+      .then(entries => setFieldOptions(Object.fromEntries(entries)))
+      .catch(err => setError(err.message));
+  }, [resource]);
 
   const startCreate = () => { setEditing('new'); setForm(emptyForm(config)); setError(''); };
   const startEdit = row => {
@@ -269,7 +303,7 @@ export const AdminResourceManager = ({ resource }) => {
       <div className="grid grid-cols-2 gap-5">
         {config.fields.map(field => <div key={field.name} className={`space-y-2 ${field.wide ? 'col-span-2' : ''}`}>
           <label className="text-[11px] uppercase tracking-wider font-semibold text-[#114232]">{field.label}{field.required ? ' *' : ''}</label>
-          <Field field={field} value={form[field.name]} onChange={value => setForm(prev => ({ ...prev, [field.name]: value }))} uploading={uploading} setUploading={setUploading} />
+          <Field field={field} value={form[field.name]} onChange={value => setForm(prev => ({ ...prev, [field.name]: value }))} uploading={uploading} setUploading={setUploading} options={fieldOptions[field.name]} />
         </div>)}
       </div>
       <div className="flex justify-end gap-3 mt-7 pt-5 border-t"><button type="button" onClick={() => setEditing(null)} className="px-5 py-3 border rounded-xl text-xs uppercase">Cancel</button><button disabled={saving || uploading} className="px-6 py-3 bg-[#114232] text-[#efdbbb] rounded-xl text-xs uppercase font-semibold disabled:opacity-50">{saving ? 'Saving…' : 'Save'}</button></div>

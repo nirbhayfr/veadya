@@ -1,13 +1,17 @@
-import React from "react";
+import { Link } from "react-router-dom";
+import { useHomepageSection } from "../../context/SiteDataContext";
+import { withImageFallback } from "../../utils/mediaUrl";
 
 const OurStory = () => {
+	const content = useHomepageSection("our-story") || {};
 	return (
 		<section className="founder-section">
 			<div className="founder-inner">
 				<div className="founder-img-wrap">
 					<img
-						src="/all-juices.png"
-						alt="Veadya Wellness"
+						src={content.image || "/all-juices.png"}
+						onError={withImageFallback("/all-juices.png")}
+						alt={content.title || "Veadya Wellness"}
 						className="founder-img"
 					/>
 				</div>
@@ -15,20 +19,16 @@ const OurStory = () => {
 				<div className="founder-text">
 					<p className="founder-eyebrow">
 						<i className="fa-solid fa-seedling text-[8px]"></i>
-						Pure Botanicals · Ancient Wisdom
+						{content.eyebrow || "Pure Botanicals · Ancient Wisdom"}
 					</p>
 					<h2 className="founder-heading">
-						Elevate Your Daily Wellness
+						{content.title || "Elevate Your Daily Wellness"}
 						<em className="block text-xl opacity-80 mt-1 font-normal font-sans tracking-[0.1em] uppercase">
 							100% Organic Rituals
 						</em>
 					</h2>
 					<p className="founder-para">
-						Discover our collection of nutrient-rich
-						cold-pressed juices, high-potency drops, and
-						precision-dosed capsules. Formulated using
-						authentic Ayurvedic principles to restore balance,
-						enhance energy, and build lasting vitality.
+						{content.description || "Discover our collection of nutrient-rich cold-pressed juices, high-potency drops, and precision-dosed capsules. Formulated using authentic Ayurvedic principles to restore balance, enhance energy, and build lasting vitality."}
 					</p>
 					<div className="founder-pills mt-6 mb-6">
 						<span className="founder-pill">
@@ -45,10 +45,10 @@ const OurStory = () => {
 						</span>
 					</div>
 					<div className="founder-cta-row">
-						<a href="/shop" className="founder-btn-primary">
-							Shop All Rituals{" "}
+						<Link to={content.buttonLink || "/shop"} className="founder-btn-primary">
+							{content.buttonText || "Shop All Rituals"}{" "}
 							<i className="fa-solid fa-arrow-right text-[9px]"></i>
-						</a>
+						</Link>
 						<a href="/about" className="founder-btn-ghost">
 							Our Philosophy{" "}
 							<i className="fa-solid fa-arrow-right text-[9px]"></i>

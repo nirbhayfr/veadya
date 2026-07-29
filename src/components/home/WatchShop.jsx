@@ -1,8 +1,9 @@
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/autoplay";
+import { useHomepageSection } from "../../context/SiteDataContext";
 
 const reelsData = [
 	{
@@ -53,6 +54,7 @@ const reelsData = [
 ];
 
 const WatchShop = () => {
+	const content = useHomepageSection("watch-shop") || {};
 	const swiperRef = useRef(null);
 	const [likes, setLikes] = useState({});
 
@@ -79,17 +81,13 @@ const WatchShop = () => {
 				<div className="section-header text-center mb-12">
 					<p className="section-eyebrow flex items-center justify-center gap-2">
 						<i className="fa-solid fa-play section-eyebrow-icon" />
-						Watch &amp; Shop{" "}
-						<span className="eyebrow-dot">·</span> Interactive
-						Reels
+						{content.eyebrow || "Watch & Shop · Interactive Reels"}
 					</p>
 					<h2 className="section-title">
-						Experience Our Daily Rituals
+						{content.title || "Experience Our Daily Rituals"}
 					</h2>
 					<p className="section-desc max-w-2xl mx-auto">
-						See how our premium botanical remedies are applied
-						and integrated into a morning or evening wellness
-						routine. Shop directly from each video.
+						{content.description || "See how our premium botanical remedies are applied and integrated into a morning or evening wellness routine. Shop directly from each video."}
 					</p>
 				</div>
 

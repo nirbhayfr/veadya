@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -7,8 +7,9 @@ import {
 	toggleSearch,
 } from "../../store/slices/uiSlice";
 import { logout } from "../../store/slices/authSlice";
-import { useSiteData } from "../../context/SiteDataContext";
+import { useContentEntries, useSiteData } from "../../context/SiteDataContext";
 import { withImageFallback } from "../../utils/mediaUrl";
+import { api } from "../../utils/api";
 
 const Header = () => {
 	const location = useLocation();
@@ -21,10 +22,52 @@ const Header = () => {
 	);
 	const [isShopHovered, setIsShopHovered] = useState(false);
 	const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
+	const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+	const [notifications, setNotifications] = useState([]);
 	const { settings, menus, categories: apiCategories } = useSiteData();
+	const announcementEntries = useContentEntries("announcement-bar");
+	const announcements = announcementEntries.length
+		? announcementEntries.map(entry => entry.data)
+		: [
+			{ message: "FREE SHIPPING ON EVERY ORDER", icon: "fa-solid fa-truck-fast" },
+			{ message: "100% NATURAL · AYURVEDIC FORMULAS", icon: "fa-solid fa-leaf" },
+		];
 	const categories = apiCategories
 		.filter(category => category.status !== "inactive")
 		.map(category => ({ name: category.name, img: category.image || "/p-1.png" }));
+	const unreadCount = notifications.filter(notification => !notification.isRead).length;
+
+	const loadNotifications = useCallback(() => {
+		if (!isAuthenticated) return;
+		api.get("/notification/mine")
+			.then(response => setNotifications(Array.isArray(response.data) ? response.data : []))
+			.catch(() => setNotifications([]));
+	}, [isAuthenticated]);
+
+	useEffect(() => {
+		if (isAuthenticated) loadNotifications();
+	}, [isAuthenticated, loadNotifications]);
+
+	const markNotificationRead = async (notification) => {
+		if (notification.isRead) return;
+		setNotifications(current => current.map(item =>
+			item._id === notification._id ? { ...item, isRead: true } : item,
+		));
+		try {
+			await api.put(`/notification/mine/${notification._id}/read`);
+		} catch {
+			loadNotifications();
+		}
+	};
+
+	const markAllNotificationsRead = async () => {
+		setNotifications(current => current.map(notification => ({ ...notification, isRead: true })));
+		try {
+			await api.put("/notification/mine/read-all");
+		} catch {
+			loadNotifications();
+		}
+	};
 
 	return (
 		<>
@@ -32,14 +75,12 @@ const Header = () => {
 				<div className="marquee-track">
 					{[...Array(8)].map((_, i) => (
 						<React.Fragment key={i}>
-							<span className="marquee-item">
-								<i className="fa-solid fa-truck-fast marquee-icon"></i>
-								FREE SHIPPING ON EVERY ORDER
-							</span>
-							<span className="marquee-item">
-								<i className="fa-solid fa-leaf marquee-icon"></i>
-								100% NATURAL · AYURVEDIC FORMULAS
-							</span>
+							{announcements.map((announcement, index) => (
+								<span className="marquee-item" key={`${i}-${index}`}>
+									<i className={`${announcement.icon || "fa-solid fa-leaf"} marquee-icon`}></i>
+									{announcement.message}
+								</span>
+							))}
 						</React.Fragment>
 					))}
 				</div>
@@ -276,6 +317,70 @@ const Header = () => {
 								></line>
 							</svg>
 						</button>
+
+						{isAuthenticated && (
+							<div className="relative">
+								<button
+									className="icon-btn relative"
+									aria-label={`Notifications${unreadCount ? `, ${unreadCount} unread` : ""}`}
+									onClick={() => {
+										setIsNotificationsOpen(open => !open);
+										setIsUserDropdownOpen(false);
+										loadNotifications();
+									}}
+								>
+									<i className="fa-regular fa-bell text-[19px]" />
+									{unreadCount > 0 && (
+										<span className="absolute -top-1 -right-1 min-w-4 h-4 px-1 rounded-full bg-[#b34b4b] text-white text-[9px] leading-4 text-center font-semibold">
+											{unreadCount > 9 ? "9+" : unreadCount}
+										</span>
+									)}
+								</button>
+
+								{isNotificationsOpen && (
+									<div className="absolute top-full right-0 pt-4 z-[350]">
+										<div className="w-[min(22rem,calc(100vw-2rem))] bg-white border border-gray-100 rounded-2xl shadow-2xl overflow-hidden">
+											<div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+												<div>
+													<p className="font-serif text-lg text-gray-900">Notifications</p>
+													<p className="text-[10px] text-gray-400 mt-0.5">{unreadCount} unread</p>
+												</div>
+												{unreadCount > 0 && (
+													<button onClick={markAllNotificationsRead} className="text-[10px] uppercase tracking-wider font-semibold text-[#114232]">
+														Mark all read
+													</button>
+												)}
+											</div>
+											<div className="max-h-[min(28rem,70vh)] overflow-y-auto">
+												{notifications.length ? notifications.map(notification => (
+													<button
+														key={notification._id}
+														onClick={() => markNotificationRead(notification)}
+														className={`w-full text-left px-5 py-4 border-b border-gray-50 last:border-0 transition-colors hover:bg-[#f7f8f5] ${notification.isRead ? "bg-white" : "bg-[#f1f6f2]"}`}
+													>
+														<div className="flex gap-3">
+															<span className={`mt-1.5 w-2 h-2 rounded-full flex-shrink-0 ${notification.isRead ? "bg-gray-200" : "bg-[#114232]"}`} />
+															<span className="min-w-0">
+																<span className="block text-sm font-semibold text-gray-800">{notification.title}</span>
+																<span className="block text-xs leading-5 text-gray-500 mt-1">{notification.message}</span>
+																<span className="block text-[10px] uppercase tracking-wider text-gray-400 mt-2">
+																	{new Date(notification.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
+																</span>
+															</span>
+														</div>
+													</button>
+												)) : (
+													<div className="px-6 py-12 text-center">
+														<i className="fa-regular fa-bell text-2xl text-gray-300" />
+														<p className="text-sm text-gray-500 mt-3">No notifications yet.</p>
+													</div>
+												)}
+											</div>
+										</div>
+									</div>
+								)}
+							</div>
+						)}
 
 						{/* User Dropdown */}
 						<div
