@@ -29,8 +29,8 @@ const Header = () => {
 	const announcements = announcementEntries.length
 		? announcementEntries.map(entry => entry.data)
 		: [
-			{ message: "FREE SHIPPING ON EVERY ORDER", icon: "fa-solid fa-truck-fast" },
-			{ message: "100% NATURAL · AYURVEDIC FORMULAS", icon: "fa-solid fa-leaf" },
+			{ message: "FREE SHIPPING ON ELIGIBLE ORDERS", icon: "fa-solid fa-truck-fast" },
+			{ message: "AYURVEDIC FORMULATIONS MADE WITH CAREFULLY SELECTED INGREDIENTS", icon: "fa-solid fa-leaf" },
 		];
 	const categories = apiCategories
 		.filter(category => category.status !== "inactive")

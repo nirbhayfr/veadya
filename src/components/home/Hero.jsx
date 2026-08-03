@@ -16,10 +16,10 @@ const Hero = () => {
 			.map(entry => entry.data)
 			.sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
 		: [
-			{ title: "100% Natural", description: "Sourced directly from earth's bounty.", icon: "fa-solid fa-seedling" },
-			{ title: "GMP Certified", description: "Highest global safety standards.", icon: "fa-solid fa-shield-halved" },
-			{ title: "No Chemicals", description: "Pure botanicals, nothing artificial.", icon: "fa-solid fa-flask-vial" },
-			{ title: "Thousands Trust", description: "Join our community of wellness.", icon: "fa-solid fa-users" },
+			{ title: "Carefully Selected Ingredients", description: "Herbal ingredients chosen with attention to quality and consistency.", icon: "fa-solid fa-seedling" },
+			{ title: "Made in a GMP-Certified Facility", description: "Produced under defined manufacturing and quality-control standards.", icon: "fa-solid fa-shield-halved" },
+			{ title: "No Unnecessary Synthetic Additives", description: "Thoughtfully formulated with herbal ingredients and clearly disclosed additives.", icon: "fa-solid fa-flask-vial" },
+			{ title: "Made with Care and Consistency", description: "Become part of the Veadya wellness community.", icon: "fa-solid fa-users" },
 		];
 	const slidesData = banners.homepage.map(banner => ({
 		id: banner._id,
@@ -27,7 +27,7 @@ const Hero = () => {
 		title: banner.title,
 		eyebrow: banner.eyebrow,
 		subtitle: banner.subtitle,
-		desc: banner.subtitle,
+		desc: banner.description || banner.subtitle,
 		buttonText: banner.buttonText,
 		buttonLink: banner.buttonLink,
 	}));
@@ -92,7 +92,7 @@ const Hero = () => {
 												className={`hero-content ${isActive ? "is-active" : ""}`}
 											>
 												<p className="hero-tag">
-													{slide.eyebrow || "Premium Ayurvedic Wellness"}
+											{slide.eyebrow || "Ayurvedic Wellness for Everyday Life"}
 												</p>
 
 												<h1 className="hero-title">

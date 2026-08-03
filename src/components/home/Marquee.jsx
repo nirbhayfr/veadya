@@ -1,14 +1,12 @@
-import React from 'react';
-
 const marqueeItems = [
-  'GMP Certified',
-  '100% Organic',
-  'Vegan & Cruelty Free',
-  'No Added Sugar',
-  'Lab Tested',
-  'Eco-Friendly Packaging',
-  'Authentic Ayurveda',
-  'Gluten Free'
+  'Traditional Ayurveda',
+  'Thoughtful Formulation',
+  'Carefully Selected Ingredients',
+  'Everyday Wellness',
+  'Herbal Juices',
+  'Measured Herbal Drops',
+  'Convenient Capsules',
+  'Made for Modern Life'
 ];
 
 const Marquee = () => {

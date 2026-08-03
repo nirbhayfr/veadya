@@ -52,28 +52,27 @@ const Footer = () => {
 									className="footer-logo-img"
 								/>
 								<small>
-									Ancient Wisdom · Modern Form
+									Traditional Ayurveda · Made for Modern Life
 								</small>
 							</Link>
 							<p className="footer-about-text">
-								For over a decade, Veadya has bridged
-								5,000-year-old Ayurvedic wisdom with
-								modern botanical science — crafting
-								high-potency formulas for your everyday
-								ritual.
+								For over a decade, Veadya has brought together
+								traditional Ayurvedic knowledge, carefully selected
+								herbal ingredients, and modern quality standards to
+								create wellness products for everyday life.
 							</p>
 							<div className="footer-certs">
 								<span className="cert-badge">
 									<i className="fa-solid fa-seedling"></i>{" "}
-									100% Natural
+									Carefully Selected Ingredients
 								</span>
 								<span className="cert-badge">
 									<i className="fa-solid fa-shield-halved"></i>{" "}
-									GMP Certified
+									Made in a GMP-Certified Facility
 								</span>
 								<span className="cert-badge">
 									<i className="fa-solid fa-flask-vial"></i>{" "}
-									No Synthetics
+									Transparent Formulations
 								</span>
 							</div>
 							<div className="footer-socials">
@@ -235,7 +234,7 @@ const Footer = () => {
 					</p>
 					<p className="copyright-made">
 						<i className="fa-solid fa-leaf"></i> Made with
-						intention in India · 100% Natural · GMP Certified
+						intention in India · Carefully Selected Ingredients · Thoughtful Formulation
 					</p>
 				</div>
 			</div>

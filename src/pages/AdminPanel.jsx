@@ -17,7 +17,6 @@ import {
   Package, 
   FolderTree, 
   Mail, 
-  Database, 
   ShoppingBag,
   Plus, 
   Edit2, 
@@ -410,110 +409,6 @@ const AdminPanel = () => {
     }
   };
 
-  // Trigger seed script API
-  const handleSeedDatabase = async () => {
-    if (!window.confirm('This will wipe all existing products and categories and reload defaults. Continue?')) return;
-
-    try {
-      setActionLoading(true);
-      setErrorMsg('');
-      const res = await api.post('/product/seed');
-      setSuccessMsg(res.message || 'Database seeded successfully!');
-      fetchData();
-      
-      // Reload products in App
-      const refreshRes = await api.get('/product?limit=100');
-      if (refreshRes.data) {
-        const normalized = refreshRes.data.map(p => ({
-          id: p.sku && p.sku.startsWith("VEADYA-") ? parseInt(p.sku.replace("VEADYA-", "")) : p._id,
-          _id: p._id,
-          name: p.title,
-          price: p.price,
-          image: p.images?.[0]?.url || "/p-1.png",
-          category: p.categoryName,
-          tag: p.categoryName,
-          problem: p.tags?.[0] || "General Wellness",
-          shortDescription: p.description,
-          originalPrice: p.originalPrice,
-          size: p.size,
-          notes: p.notes,
-          sku: p.sku,
-          bg: p.bg,
-          accent: p.accent,
-          textColor: p.textColor,
-          subColor: p.subColor,
-          rating: p.ratingAverage,
-          reviews: p.ratingCount,
-        }));
-        dispatch(setProducts(normalized));
-      }
-
-      setTimeout(() => setSuccessMsg(''), 4000);
-    } catch (err) {
-      setErrorMsg(err.message || 'Failed to seed database.');
-    } finally {
-      setActionLoading(false);
-    }
-  };
-
-  const handleSeedCompleteWebsite = async () => {
-    if (!window.confirm('Initialize the complete demo website? Existing products and categories will be replaced; CMS content will be safely created or updated. Customer and order data will not be touched.')) return;
-
-    try {
-      setActionLoading(true);
-      setErrorMsg('');
-      await api.post('/product/seed');
-      const siteRes = await api.post('/seed/site-content');
-      setSuccessMsg(siteRes.message || 'Complete website seeded successfully!');
-      window.dispatchEvent(new Event('veadya-site-data-refresh'));
-      await fetchData();
-
-      const refreshRes = await api.get('/product?limit=100');
-      if (refreshRes.data) {
-        dispatch(setProducts(refreshRes.data.map(p => ({
-          id: p.sku && p.sku.startsWith('VEADYA-') ? parseInt(p.sku.replace('VEADYA-', '')) : p._id,
-          _id: p._id,
-          name: p.title,
-          price: p.price,
-          image: p.images?.[0]?.url || '/p-1.png',
-          category: p.categoryName,
-          tag: p.categoryName,
-          problem: p.tags?.[0] || 'General Wellness',
-          shortDescription: p.description,
-          originalPrice: p.originalPrice,
-          size: p.size,
-          notes: p.notes,
-          sku: p.sku,
-          bg: p.bg,
-          accent: p.accent,
-          textColor: p.textColor,
-          subColor: p.subColor,
-          rating: p.ratingAverage,
-          reviews: p.ratingCount,
-        }))));
-      }
-    } catch (err) {
-      setErrorMsg(err.message || 'Failed to seed the complete website.');
-    } finally {
-      setActionLoading(false);
-    }
-  };
-
-  const handleSeedSiteContent = async () => {
-    if (!window.confirm('Create or repair banners, menus, settings, CMS entries, pages, posts, coupons, and notifications? Products, customers, and orders will not be changed.')) return;
-    try {
-      setActionLoading(true);
-      setErrorMsg('');
-      const response = await api.post('/seed/site-content');
-      setSuccessMsg(response.message || 'Site content repaired successfully.');
-      window.dispatchEvent(new Event('veadya-site-data-refresh'));
-    } catch (err) {
-      setErrorMsg(err.message || 'Failed to seed site content.');
-    } finally {
-      setActionLoading(false);
-    }
-  };
-
   const getOrderCustomerName = (order) => {
     const userName = `${order.user?.firstName || ''} ${order.user?.lastName || ''}`.trim();
     return userName || order.shippingAddress?.name || 'Guest customer';
@@ -608,14 +503,6 @@ const AdminPanel = () => {
               {tab.label}
             </button>
           ))}
-
-          <button 
-            onClick={() => { setActiveTab('actions'); setShowForm(false); }}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-sm font-medium ${activeTab === 'actions' ? 'bg-[#efdbbb] text-[#114232] shadow-md' : 'hover:bg-white/10 text-white/80'}`}
-          >
-            <Database size={18} />
-            System Actions
-          </button>
         </nav>
 
         <div className="p-6 border-t border-white/10 text-xs text-white/50">
@@ -635,7 +522,6 @@ const AdminPanel = () => {
                activeTab === 'categories' ? 'Categories Structure' : 
                activeTab === 'messages' ? 'Inbound Inquiries' :
                activeTab === 'orders' ? 'Orders Management' :
-               activeTab === 'actions' ? 'System Operations' :
                platformTabs.find(tab => tab.id === activeTab)?.label || 'Admin Control Center'}
             </h2>
             <p className="text-xs text-gray-400 mt-1">Manage the online botanical apothecary store.</p>
@@ -922,7 +808,7 @@ const AdminPanel = () => {
                   {loading ? (
                     <div className="p-12 text-center text-gray-400 text-sm">Synchronizing products...</div>
                   ) : productsList.length === 0 ? (
-                    <div className="p-12 text-center text-gray-400 text-sm">No botanical products in catalog. Try seeding from the Actions tab.</div>
+                    <div className="p-12 text-center text-gray-400 text-sm">No botanical products in the catalog.</div>
                   ) : (
                     <div className="overflow-x-auto">
                       <table className="w-full text-left border-collapse">
@@ -1003,7 +889,7 @@ const AdminPanel = () => {
               {loading ? (
                 <div className="p-12 text-center text-gray-400 text-sm">Fetching categories catalog...</div>
               ) : categoriesList.length === 0 ? (
-                <div className="p-12 text-center text-gray-400 text-sm">No category files loaded. Try seeding.</div>
+                <div className="p-12 text-center text-gray-400 text-sm">No categories have been created.</div>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-left border-collapse">
@@ -1189,50 +1075,6 @@ const AdminPanel = () => {
           {activeTab === 'automation' && <AdminAutomation />}
           {activeTab === 'settings' && <AdminSettings />}
           {activeTab === 'seo' && <AdminSeo />}
-
-          {/* ── SYSTEM ACTIONS TAB ── */}
-          {activeTab === 'actions' && (
-            <div className="max-w-2xl mx-auto bg-white border border-gray-100 rounded-3xl p-8 shadow-xs text-center space-y-6">
-              <div className="w-16 h-16 bg-[#efdbbb]/30 rounded-full flex items-center justify-center text-[#114232] mx-auto">
-                <Database size={28} />
-              </div>
-              
-              <div>
-                <h3 className="text-lg font-serif font-bold text-gray-800">Database Synchronization &amp; Seeding</h3>
-                <p className="text-sm text-gray-500 mt-2 leading-relaxed">
-                  Reset the database catalog to the primary default wellness products. This will delete all products and categories, then recreate the initial Capsule, Juice, and Drop items.
-                </p>
-              </div>
-
-              <div className="pt-4">
-                <button
-                  onClick={handleSeedSiteContent}
-                  disabled={actionLoading}
-                  className="bg-[#24715b] hover:bg-[#1d5d4b] text-white px-6 py-3.5 rounded-xl text-xs uppercase tracking-widest font-semibold transition-all shadow-md disabled:opacity-50 inline-flex items-center gap-2 mr-3"
-                >
-                  <Upload size={16} />
-                  {actionLoading ? 'Repairing content...' : 'Seed / Repair Site Content'}
-                </button>
-                <button
-                  onClick={handleSeedCompleteWebsite}
-                  disabled={actionLoading}
-                  className="bg-[#b66a3c] hover:bg-[#9d5831] text-white px-6 py-3.5 rounded-xl text-xs uppercase tracking-widest font-semibold transition-all shadow-md disabled:opacity-50 inline-flex items-center gap-2 mr-3"
-                >
-                  <Sparkles size={16} />
-                  {actionLoading ? 'Initializing website...' : 'Seed Complete Website'}
-                </button>
-                <button
-                  onClick={handleSeedDatabase}
-                  disabled={actionLoading}
-                  className="bg-[#114232] hover:bg-[#1a5b46] text-[#efdbbb] px-6 py-3.5 rounded-xl text-xs uppercase tracking-widest font-semibold transition-all shadow-md disabled:opacity-50 inline-flex items-center gap-2"
-                >
-                  <Database size={16} />
-                  {actionLoading ? 'Initializing database defaults...' : 'Re-seed Database Products'}
-                </button>
-              </div>
-            </div>
-          )}
-
         </div>
       </main>
     </div>

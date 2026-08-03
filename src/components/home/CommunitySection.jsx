@@ -5,57 +5,57 @@ import { useHomepageSection } from '../../context/SiteDataContext';
 const communityData = [
   {
     tag: "Ashwagandha Gold",
-    text: '"Veadya gave me back mornings I had stopped looking forward to. The Ashwagandha Gold settled my nervous system like nothing else had — and I have tried everything."',
+    text: '"The routine was easy to follow and fitted comfortably into my mornings."',
     avatar: "https://images.unsplash.com/photo-1595152772835-219674b2a8a6?w=120&q=80",
     name: "Priya Sharma",
     role: "Yoga Instructor · Mumbai",
     city: "Mumbai",
-    excerpt: "Gave me back mornings I had stopped looking forward to.",
+    excerpt: "The routine fitted comfortably into my mornings.",
   },
   {
     tag: "Immunity Drops",
-    text: '"As a physician I was cautious about herbal claims. Four months later, zero sick days. The Immunity Drops are the most credible botanical formula I have encountered."',
+    text: '"I found the product easy to use consistently as part of my daily wellness routine."',
     avatar: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=120&q=80",
     name: "Dr. Nandita Rao",
     role: "Physician · Chennai",
     city: "Chennai",
-    excerpt: "Four months later, zero sick days — most credible formula.",
+    excerpt: "Easy to use consistently as part of my daily routine.",
   },
   {
     tag: "Pitta Cooling Drops",
-    text: '"Skin clearer, mind cooler, inflammation quieted — I finally understand what balance feels like in the body. The Pitta Cooling Drops changed me in eight weeks."',
+    text: '"I found the drops simple to include in my everyday wellness routine."',
     avatar: "https://images.unsplash.com/photo-1607746882042-944635dfe10e?w=120&q=80",
     name: "Riya Menon",
     role: "Wellness Coach · Bengaluru",
     city: "Bengaluru",
-    excerpt: "Skin clearer, mind cooler, inflammation quieted in eight weeks.",
+    excerpt: "Simple to include in an everyday wellness routine.",
   },
   {
     tag: "Brahmi Mind Oil",
-    text: '"Three weeks of Brahmi Mind Oil and my focus has completely transformed. I used to struggle through afternoons — now I feel steady from morning to night."',
+    text: '"The product was straightforward to use and worked well with my daily schedule."',
     avatar: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=120&q=80",
     name: "Kavya Iyer",
     role: "Software Engineer · Pune",
     city: "Pune",
-    excerpt: "Focus completely transformed — steady from morning to night.",
+    excerpt: "Straightforward to use with my daily schedule.",
   },
   {
     tag: "Triphala Cleanse",
-    text: '"My digestion has been a lifelong struggle. Triphala Cleanse changed everything within the first ten days — gentle, effective, and deeply nourishing."',
+    text: '"I appreciated how easy the product was to add to a consistent routine."',
     avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=120&q=80",
     name: "Ananya Desai",
     role: "Teacher · Ahmedabad",
     city: "Ahmedabad",
-    excerpt: "Digestion changed everything within the first ten days.",
+    excerpt: "Easy to add to a consistent routine.",
   },
   {
     tag: "Shatavari Elixir",
-    text: '"Hormonal balance felt impossible before Shatavari Elixir. Within six weeks the difference was undeniable — energy restored, mood lifted, body finally at ease."',
+    text: '"The formulation fitted naturally into my everyday wellness routine."',
     avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=120&q=80",
     name: "Meera Pillai",
     role: "Nutritionist · Kochi",
     city: "Kochi",
-    excerpt: "Energy restored, mood lifted — body finally at ease in six weeks.",
+    excerpt: "Fitted naturally into my everyday wellness routine.",
   }
 ];
 
@@ -104,11 +104,11 @@ const CommunitySection = () => {
       <div className="section-container">
         <div className="section-header">
           <p className="section-eyebrow">
-            <i className="fa-solid fa-spa"></i> {content.eyebrow || 'Customer Perspectives · Ancient Wisdom Proven'}
+            <i className="fa-solid fa-spa"></i> {content.eyebrow || 'Real Experiences from Our Community'}
           </p>
-          <h2 className="section-title">{content.title || 'Trusted by Our Community'}</h2>
+          <h2 className="section-title">{content.title || 'What Our Customers Say'}</h2>
           <p className="section-desc">
-            {content.description || 'Every testimony is a ritual completed. Every review is a life touched by botanical wisdom.'}
+            {content.description || 'Read how customers have included Veadya products in their everyday wellness routines.'}
           </p>
         </div>
         <div className="community-grid">

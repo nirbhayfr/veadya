@@ -81,13 +81,13 @@ const WatchShop = () => {
 				<div className="section-header text-center mb-12">
 					<p className="section-eyebrow flex items-center justify-center gap-2">
 						<i className="fa-solid fa-play section-eyebrow-icon" />
-						{content.eyebrow || "Watch & Shop · Interactive Reels"}
+						{content.eyebrow || "Watch, Learn and Explore"}
 					</p>
 					<h2 className="section-title">
-						{content.title || "Experience Our Daily Rituals"}
+						{content.title || "See How Veadya Fits into Everyday Life"}
 					</h2>
 					<p className="section-desc max-w-2xl mx-auto">
-						{content.description || "See how our premium botanical remedies are applied and integrated into a morning or evening wellness routine. Shop directly from each video."}
+						{content.description || "Watch simple product demonstrations, discover ways to use each formulation, and explore products directly from the videos."}
 					</p>
 				</div>
 

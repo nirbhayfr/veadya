@@ -107,6 +107,7 @@ export const resourceConfigs = {
       { name: 'title', label: 'Title', required: true },
       { name: 'eyebrow', label: 'Eyebrow / Tagline', optional: true },
       { name: 'subtitle', label: 'Subtitle', type: 'textarea', optional: true },
+      { name: 'description', label: 'Description', type: 'textarea', optional: true },
       { name: 'image', label: 'Banner Image', type: 'image', required: true },
       { name: 'buttonText', label: 'Button Text', optional: true }, { name: 'buttonLink', label: 'Button Link', optional: true },
       { name: 'position', label: 'Position', type: 'select', options: ['homepage', 'category', 'sidebar', 'popup'], default: 'homepage' },

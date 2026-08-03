@@ -1,4 +1,3 @@
-import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import "swiper/css";
@@ -6,37 +5,37 @@ import "swiper/css";
 const heroProblems = [
 	{
 		id: 1,
-		name: "Immunity Wellness",
+		name: "Immune Support",
 		img: "/immunity.png",
 		link: "/shop?problem=Immunity+Wellness",
 	},
 	{
 		id: 2,
-		name: "Digestive Wellness",
+		name: "Digestive Support",
 		img: "/digestive.png",
 		link: "/shop?problem=Digestive+Wellness",
 	},
 	{
 		id: 3,
-		name: "Pain Reliever",
+		name: "Joint & Mobility Support",
 		img: "/pain.png",
 		link: "/shop?problem=Pain+Reliever",
 	},
 	{
 		id: 4,
-		name: "Cardiac Wellness",
+		name: "Heart Wellness",
 		img: "/cardiac.png",
 		link: "/shop?problem=Cardiac+Wellness",
 	},
 	{
 		id: 5,
-		name: "Skin Wellness",
+		name: "Skin Health & Wellness",
 		img: "/skin.png",
 		link: "/shop?problem=Skin+Wellness",
 	},
 	{
 		id: 6,
-		name: "Blood Purifier",
+		name: "Everyday Cleansing Support",
 		img: "/blood.png",
 		link: "/shop?problem=Blood+Purifier",
 	},
@@ -50,14 +49,12 @@ const HeroCategories = () => {
 				<div className="section-header">
 					<p className="section-eyebrow">
 						<i className="fa-solid fa-leaf section-eyebrow-icon"></i>
-						Shop by Concern{" "}
-						<span className="eyebrow-dot">·</span> Targeted
-						Care
+						Explore by Wellness Need
 					</p>
-					<h2 className="section-title">Shop by Problem</h2>
+					<h2 className="section-title">Find Support for Your Wellness Goals</h2>
 					<p className="section-desc">
-						Select a health concern to explore our specialized
-						Ayurvedic juices, capsules, and drops.
+						Choose a wellness goal to explore Ayurvedic juices,
+						capsules, and herbal drops suited to your everyday routine.
 					</p>
 				</div>
 

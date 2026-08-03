@@ -35,17 +35,17 @@ const ProductCard = ({ product, isDark = false }) => {
             <p className="text-[#f3eed5] font-semibold text-[13px] tracking-wide">
               ₹ {product.price}
             </p>
-            <button
-              disabled
-              aria-label="Coming soon"
+			<Link
+				to="/contact"
+				aria-label={`Notify me when ${product.name} is available`}
               className="bg-white/5 backdrop-blur-sm border border-white/20 text-white px-4 py-2 text-[9px] uppercase tracking-[0.15em] hover:bg-white hover:text-[var(--bg-deep)] transition-all font-medium rounded-sm cursor-pointer disabled:opacity-60 disabled:cursor-default"
               style={{
                 whiteSpace: 'nowrap',
                 flexShrink: 0
               }}
             >
-              COMING SOON
-            </button>
+				Notify Me
+			</Link>
           </div>
         </div>
       </div>
@@ -82,10 +82,10 @@ const ProductCard = ({ product, isDark = false }) => {
         <div className="prod-card-footer">
           <span className="prod-card-price">₹{product.price}</span>
 
-          <button
+			<Link
+				to="/contact"
             className="prod-card-add-text"
-            disabled
-            aria-label="Coming soon"
+				aria-label={`Notify me when ${product.name} is available`}
             style={{
               padding: '10px 16px',
               fontSize: '10px',
@@ -96,7 +96,7 @@ const ProductCard = ({ product, isDark = false }) => {
               color: 'var(--text-dark)',
               border: 'none',
               borderRadius: '6px',
-              cursor: 'not-allowed',
+              cursor: 'pointer',
               transition: 'all 0.3s ease',
               display: 'flex',
               alignItems: 'center',
@@ -105,8 +105,8 @@ const ProductCard = ({ product, isDark = false }) => {
               flexShrink: 0
             }}
           >
-            Coming Soon
-          </button>
+				Notify Me
+			</Link>
         </div>
       </div>
     </div>

@@ -1,4 +1,5 @@
-import React, { useState, useMemo, useEffect } from 'react';
+/* eslint-disable react-hooks/set-state-in-effect */
+import { useState, useMemo, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
 import ProductCard from '../components/shop/ProductCard';
@@ -6,6 +7,13 @@ import ProductCard from '../components/shop/ProductCard';
 const ITEMS_PER_PAGE = 6;
 
 const CATEGORIES = ['All', 'Juice', 'Capsule', 'Drop'];
+
+const CATEGORY_LABELS = {
+  All: 'All Products',
+  Juice: 'Herbal Juices',
+  Capsule: 'Ayurvedic Capsules',
+  Drop: 'Herbal Drops',
+};
 
 const CATEGORY_ICONS = {
   'All':     'fa-solid fa-spa',
@@ -87,17 +95,17 @@ const ShopPage = () => {
           {/* Eyebrow */}
           <p className="shop-hero-eyebrow">
             <i className="fa-solid fa-seedling" />
-            Ancient Wisdom · Modern Form
+            Traditional Ayurveda · Made for Modern Life
           </p>
 
           {/* Heading */}
           <h1 className="shop-hero-title">
-            Ritual <em>Essentials</em>
+            Everyday Ayurvedic <em>Essentials</em>
           </h1>
 
           {/* Subtitle */}
           <p className="shop-hero-subtitle">
-            {filtered.length} botanical formulas crafted for your everyday wellness ritual.
+            Explore {filtered.length} thoughtfully developed Ayurvedic formulations designed to fit naturally into your everyday wellness routine.
           </p>
 
           {/* Category Filter Pills */}
@@ -109,7 +117,7 @@ const ShopPage = () => {
                 className={`shop-filter-pill ${activeCategory === cat ? 'shop-filter-pill--active' : ''}`}
               >
                 <i className={CATEGORY_ICONS[cat]} />
-                {cat}
+                {CATEGORY_LABELS[cat]}
               </button>
             ))}
           </div>
@@ -123,8 +131,8 @@ const ShopPage = () => {
           {/* Results bar */}
           <div className="shop-results-bar flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <p className="shop-results-count">
-              Showing <strong>{paginated.length}</strong> of <strong>{filtered.length}</strong> products
-              {activeCategory !== 'All' && <> in <em>{activeCategory}</em></>}
+              Showing <strong>{paginated.length}</strong> of <strong>{filtered.length}</strong> wellness products
+              {activeCategory !== 'All' && <> in <em>{CATEGORY_LABELS[activeCategory]}</em></>}
               {activeProblem !== 'All' && <> for <em>{activeProblem}</em></>}
             </p>
             {activeProblem !== 'All' && (
@@ -199,7 +207,7 @@ const ShopPage = () => {
         </div>
       </section>
 
-      {/* ── Contact Promotion Banner (Connect With Us) ── */}
+      {/* ── Contact Promotion Banner ── */}
       <section className="shop-connect-section">
         {/* Horizontal linear absolute layer for seamless blending */}
         <div className="shop-connect-gradient-overlay" />
@@ -209,7 +217,7 @@ const ShopPage = () => {
           <div className="shop-connect-img-col">
             <img 
               src="/images/homebanner3.jfif" 
-              alt="Ayurvedic Ritual Essentials" 
+              alt="Everyday Ayurvedic Essentials"
               className="shop-connect-img"
             />
             <div className="shop-connect-img-overlay" />
@@ -235,10 +243,10 @@ const ShopPage = () => {
             <div style={{ position: 'relative', zIndex: 3 }}>
               <p className="shop-connect-eyebrow">
                 <i className="fa-solid fa-feather-pointed" />
-                Get In Touch · Connect
+                Have a Question? We’re Here to Help
               </p>
               <h2 className="shop-connect-title">
-                Connect With Us
+                Speak with the Veadya Team
               </h2>
               
               {/* Premium Gold fading line ornament */}
@@ -250,7 +258,7 @@ const ShopPage = () => {
               }} />
 
               <p className="shop-connect-desc">
-                Whether you seek personalized Ayurvedic guidance, order assistance, or wholesale partnerships, our wellness team welcomes your inquiries.
+                Whether you have a question about our products, need help with an order, or would like to discuss a business partnership, the Veadya team is ready to assist you.
               </p>
               <Link 
                 to="/contact" 
@@ -265,7 +273,7 @@ const ShopPage = () => {
                 }}
               >
                 <i className="fa-solid fa-feather-pointed mr-2" />
-                Get In Touch
+                Contact Our Team
               </Link>
             </div>
           </div>

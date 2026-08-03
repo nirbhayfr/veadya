@@ -1,10 +1,8 @@
-import React from "react";
-
 const categories = [
 	{
 		id: 1,
 		title: "Botanical Drops",
-		desc: "Fast-absorbing liquid extracts for maximum bioavailability — your daily ritual in a single dropper.",
+		desc: "Convenient herbal liquid formulations designed for simple, measured everyday use.",
 		img: "/drops.png",
 		link: "/shop?category=Drop",
 		btnText: "SHOP DROPS",
@@ -12,15 +10,15 @@ const categories = [
 	{
 		id: 2,
 		title: "Herbal Capsules",
-		desc: "Precision-dosed botanical capsules for effortless, consistent wellness.",
+		desc: "Convenient herbal capsules with clearly measured servings for easy everyday use.",
 		img: "/capsules.png",
 		link: "/shop?category=Capsule",
 		btnText: "SHOP CAPSULES",
 	},
 	{
 		id: 3,
-		title: "Cold-Pressed Juices",
-		desc: "Nutrient-rich Ayurvedic elixirs crafted fresh from whole botanicals.",
+		title: "Ayurvedic Juices",
+		desc: "Ayurvedic herbal juices made with carefully selected botanical ingredients for everyday wellness.",
 		img: "/juices.png",
 		link: "/shop?category=Juice",
 		btnText: "SHOP JUICES",
@@ -34,17 +32,14 @@ const Categories = () => {
 				<div className="section-header">
 					<p className="section-eyebrow">
 						<i className="fa-solid fa-leaf section-eyebrow-icon"></i>
-						Shop by Format{" "}
-						<span className="eyebrow-dot">·</span> Veadya
-						Collections
+						Choose the Format That Suits You
 					</p>
 					<h2 className="section-title">
-						Find Your Perfect Ritual Format
+						Choose a Wellness Format That Fits Your Routine
 					</h2>
 					<p className="section-desc">
-						From fast-absorbing drops to convenient capsules
-						and revitalizing juices — choose the format that
-						fits your lifestyle and wellness goals.
+						Explore herbal drops, convenient capsules, and Ayurvedic
+						juices, and choose the format that works best with your daily routine.
 					</p>
 				</div>
 				<div className="cat-grid-wrapper">

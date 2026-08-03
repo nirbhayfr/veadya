@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import SeasonalEdit from '../components/home/SeasonalEdit';
 
@@ -17,23 +16,23 @@ const About = () => {
           <div className="shop-hero-breadcrumb">
             <Link to="/">Home</Link>
             <i className="fa-solid fa-chevron-right" />
-            <span>About Us</span>
+            <span>Our Story</span>
           </div>
 
           {/* Eyebrow */}
           <p className="shop-hero-eyebrow">
             <i className="fa-solid fa-circle-user" />
-            Ancient Wisdom · Modern Form
+            Traditional Ayurveda · Made for Modern Life
           </p>
 
           {/* Heading */}
           <h1 className="shop-hero-title">
-            About <em>Us</em>
+            Our <em>Story</em>
           </h1>
 
           {/* Subtitle */}
           <p className="shop-hero-subtitle">
-            A decade of bridging 5,000-year-old Ayurvedic wisdom with modern botanical science.
+            For over a decade, Veadya has brought traditional Ayurvedic knowledge together with modern quality and formulation standards.
           </p>
         </div>
       </section>
@@ -46,9 +45,9 @@ const About = () => {
           <div className="section-header" style={{ marginBottom: '56px' }}>
             <p className="section-eyebrow">
               <i className="fa-solid fa-spa section-eyebrow-icon" />
-              Our Core Mission <span className="eyebrow-dot">·</span> Pure Botanicals
+              Our Purpose <span className="eyebrow-dot">·</span> Everyday Ayurvedic Wellness
             </p>
-            <h2 className="section-title">Crafting a State of Pure Balance</h2>
+            <h2 className="section-title">Making Ayurvedic Wellness Easier for Everyday Life</h2>
             <div style={{
               width: '40px',
               height: '2px',
@@ -67,7 +66,7 @@ const About = () => {
               letterSpacing: '0.01em',
               textAlign: 'center'
             }}>
-              We believe that true wellness is a harmonious flow of mind, body, and consciousness. Veadya was born out of a desire to reconcile ancient Ayurvedic wisdom with the speed and rigor of contemporary life, crafting high-potency daily essentials that restore natural equilibrium.
+              We believe wellness begins with balance and consistent everyday care. Veadya was created to make traditional Ayurvedic knowledge more accessible through thoughtfully formulated products designed for modern routines.
             </p>
           </div>
 
@@ -105,7 +104,7 @@ const About = () => {
                 letterSpacing: '0.15em',
                 textTransform: 'uppercase'
               }}>
-                ✦ EST. 2014
+                ✦ OUR APPROACH
               </div>
               <div>
                 <h3 style={{
@@ -115,7 +114,7 @@ const About = () => {
                   marginBottom: '14px',
                   lineHeight: '1.2'
                 }}>
-                  Ancient Wisdom,<br />Modern Form
+                  Traditional Knowledge,<br />Modern Approach
                 </h3>
                 <p style={{
                   fontFamily: '"Jost", sans-serif',
@@ -125,7 +124,7 @@ const About = () => {
                   color: 'rgba(255, 255, 255, 0.85)',
                   margin: 0
                 }}>
-                  Translating 5,000-year-old Ayurvedic knowledge into botanical formulas crafted for your contemporary life.
+                  We take inspiration from traditional Ayurvedic knowledge and develop herbal formulations that fit naturally into modern daily routines.
                 </p>
               </div>
             </div>
@@ -176,7 +175,7 @@ const About = () => {
                     fontWeight: 500,
                     marginBottom: '10px'
                   }}>
-                    Purity Above All
+                    Carefully Selected Ingredients
                   </h3>
                   <p style={{
                     fontFamily: '"Jost", sans-serif',
@@ -186,7 +185,7 @@ const About = () => {
                     color: 'rgba(255, 255, 255, 0.88)',
                     margin: 0
                   }}>
-                    No synthetic binders, artificial colours, or chemical preservatives — ever. If it isn't from the earth, it has no place in our formulas.
+                    We carefully select our ingredients and clearly communicate what goes into every Veadya formulation.
                   </p>
                 </div>
               </div>
@@ -222,7 +221,7 @@ const About = () => {
                   alignItems: 'center',
                   gap: '4px'
                 }}>
-                  <i className="fa-solid fa-circle-check" /> Botanicals
+                  <i className="fa-solid fa-circle-check" /> Ingredients
                 </div>
                 <div>
                   <h3 style={{
@@ -232,8 +231,18 @@ const About = () => {
                     margin: 0,
                     textShadow: '0 2px 4px rgba(0,0,0,0.15)'
                   }}>
-                    Sustainably Sourced
+                    Responsibly Selected
                   </h3>
+                  <p style={{
+                    fontFamily: '"Jost", sans-serif',
+                    fontSize: '12px',
+                    fontWeight: 300,
+                    lineHeight: '1.5',
+                    color: 'rgba(255, 255, 255, 0.88)',
+                    margin: '10px 0 0'
+                  }}>
+                    We aim to work with responsible suppliers and select ingredients with attention to quality, consistency, and traceability.
+                  </p>
                 </div>
               </div>
 
@@ -257,7 +266,7 @@ const About = () => {
                     color: 'var(--primary)',
                     lineHeight: '1'
                   }}>
-                    10K+
+                    Growing
                   </span>
                   <div style={{
                     fontFamily: '"Jost", sans-serif',
@@ -268,7 +277,7 @@ const About = () => {
                     color: 'var(--text-mid)',
                     marginTop: '6px'
                   }}>
-                    LIVES TRANSFORMED
+                    VEADYA COMMUNITY
                   </div>
                 </div>
                 <div style={{ marginTop: '20px' }}>
@@ -280,7 +289,7 @@ const About = () => {
                     color: 'var(--text-mid)',
                     margin: 0
                   }}>
-                    "Veadya gave me back mornings I had stopped looking forward to."
+                    "Veadya became an easy and consistent part of my morning wellness routine."
                   </p>
                 </div>
               </div>
@@ -315,7 +324,7 @@ const About = () => {
                     fontWeight: 500,
                     marginBottom: '12px'
                   }}>
-                    Radical Transparency
+                    Clear and Honest Information
                   </h3>
                   <p style={{
                     fontFamily: '"Jost", sans-serif',
@@ -325,7 +334,7 @@ const About = () => {
                     color: 'rgba(255, 255, 255, 0.82)',
                     margin: 0
                   }}>
-                    Full ingredient disclosure, third-party lab results on every product page, and honest communication about what Ayurveda can and cannot do.
+                    We believe customers should know what they are using. That is why we aim to provide clear ingredient information, responsible product guidance, and transparent quality details.
                   </p>
                 </div>
                 <div style={{ marginTop: '24px' }}>
@@ -342,7 +351,7 @@ const About = () => {
                     gap: '6px',
                     transition: 'gap 0.2s ease'
                   }} className="bento-commitment-link">
-                    Explore Collection <i className="fa-solid fa-arrow-right" />
+                    Explore Our Products <i className="fa-solid fa-arrow-right" />
                   </Link>
                 </div>
               </div>
@@ -366,16 +375,15 @@ const About = () => {
           <div className="founder-alt2-text">
             <p className="founder-alt2-eyebrow">
               <i className="fa-solid fa-spa"></i>
-              Meet The Founder
+              The Story Behind Veadya
             </p>
 
             <h2 className="founder-alt2-heading">
-              Conscious Luxury<br />Ayurvedic Skincare
-              <em>Ananya Verma</em>
+              Ayurvedic Wellness<br />Created with Care
             </h2>
 
             <p className="founder-alt2-para">
-              My relationship with Ayurveda began in my grandmother’s kitchen, watching her blend freshly hand-picked herbs, rich nourishing oils, and sacred flower essences. That early experience taught me that true radiance is not chemically manufactured, but cultivated with purity and respect for nature's intelligence.
+              Veadya began with a belief that traditional Ayurvedic knowledge should be easier to understand, trust, and include in everyday life.
             </p>
 
             <div className="founder-alt2-divider">
@@ -385,21 +393,21 @@ const About = () => {
             </div>
 
             <p className="founder-alt2-para">
-              Veadya was born to bridge these pristine self-care traditions with clinical extraction standards — creating elevated, high-performance daily formulas that effortlessly restore harmony to your contemporary lifestyle.
+              We carefully select our ingredients, follow thoughtful formulation processes, and work to provide clear and honest product information at every step.
             </p>
 
             <div className="founder-alt2-pills">
-              <span className="founder-alt2-pill"><i className="fa-solid fa-seedling"></i> Founder & Chief Formulator</span>
-              <span className="founder-alt2-pill"><i className="fa-solid fa-shield-halved"></i> 100% Active Botanicals</span>
-              <span className="founder-alt2-pill"><i className="fa-solid fa-flask-vial"></i> Clean Science</span>
+              <span className="founder-alt2-pill"><i className="fa-solid fa-seedling"></i> The Veadya Story</span>
+              <span className="founder-alt2-pill"><i className="fa-solid fa-shield-halved"></i> Carefully Selected Herbal Ingredients</span>
+              <span className="founder-alt2-pill"><i className="fa-solid fa-flask-vial"></i> Thoughtful Formulation</span>
             </div>
 
             <div className="founder-alt2-cta-row">
               <Link to="/our-story" className="founder-alt2-btn-primary">
-                <i className="fa-solid fa-arrow-right" style={{ fontSize: '9px' }}></i> Learn Our Story
+                <i className="fa-solid fa-arrow-right" style={{ fontSize: '9px' }}></i> Discover the Veadya Story
               </Link>
               <Link to="/shop" className="founder-alt2-btn-ghost">
-                Shop Collection <i className="fa-solid fa-arrow-right" style={{ fontSize: '9px' }}></i>
+                Explore Our Products <i className="fa-solid fa-arrow-right" style={{ fontSize: '9px' }}></i>
               </Link>
             </div>
           </div>
@@ -431,9 +439,9 @@ const About = () => {
           <div className="section-header" style={{ marginBottom: '64px' }}>
             <p className="section-eyebrow">
               <i className="fa-solid fa-clock-rotate-left section-eyebrow-icon" />
-              Our Journey <span className="eyebrow-dot">·</span> A Decade of Craft
+              Our Journey <span className="eyebrow-dot">·</span> How Veadya Has Grown
             </p>
-            <h2 className="section-title">The Journey of Veadya</h2>
+            <h2 className="section-title">The Veadya Story So Far</h2>
             <div style={{
               width: '40px',
               height: '2px',
@@ -469,7 +477,7 @@ const About = () => {
               }}>
                 <img
                   src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=400&q=80"
-                  alt="Origins"
+                  alt="The beginning of Veadya"
                   style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                 />
                 {/* Custom Color Tint Overlay */}
@@ -530,7 +538,7 @@ const About = () => {
                   display: 'block',
                   marginBottom: '8px'
                 }}>
-                  2014 · Origins
+                  2014 · The Beginning
                 </span>
                 <h3 style={{
                   fontFamily: '"Cormorant Garamond", serif',
@@ -540,7 +548,7 @@ const About = () => {
                   marginBottom: '12px',
                   lineHeight: '1.3'
                 }}>
-                  The First Formula
+                  The Beginning
                 </h3>
                 <p style={{
                   fontFamily: '"Jost", sans-serif',
@@ -550,7 +558,7 @@ const About = () => {
                   fontWeight: 300,
                   margin: 0
                 }}>
-                  Founder Ananya Verma brews the first Ashwagandha extract in her Rishikesh kitchen, guided by her grandmother's handwritten notes.
+                  Veadya began with a simple goal: to make traditional Ayurvedic wellness products easier to understand and use in everyday life.
                 </p>
               </div>
             </div>
@@ -623,7 +631,7 @@ const About = () => {
                   display: 'block',
                   marginBottom: '8px'
                 }}>
-                  2016 · Growth
+                  2016 · Our First Products
                 </span>
                 <h3 style={{
                   fontFamily: '"Cormorant Garamond", serif',
@@ -633,7 +641,7 @@ const About = () => {
                   marginBottom: '12px',
                   lineHeight: '1.3'
                 }}>
-                  First Retail Launch
+                  Our First Products Reach Customers
                 </h3>
                 <p style={{
                   fontFamily: '"Jost", sans-serif',
@@ -643,7 +651,7 @@ const About = () => {
                   fontWeight: 300,
                   margin: 0
                 }}>
-                  Veadya launches in three wellness stores across Delhi and Mumbai. The Immunity Drops sell out in the first week.
+                  Veadya introduced its first products to customers and began building a community interested in practical, everyday Ayurvedic wellness.
                 </p>
               </div>
             </div>
@@ -716,7 +724,7 @@ const About = () => {
                   display: 'block',
                   marginBottom: '8px'
                 }}>
-                  2018 · Quality
+                  2018 · Quality Standards
                 </span>
                 <h3 style={{
                   fontFamily: '"Cormorant Garamond", serif',
@@ -726,7 +734,7 @@ const About = () => {
                   marginBottom: '12px',
                   lineHeight: '1.3'
                 }}>
-                  GMP Certification
+                  Strengthening Our Quality Standards
                 </h3>
                 <p style={{
                   fontFamily: '"Jost", sans-serif',
@@ -736,7 +744,7 @@ const About = () => {
                   fontWeight: 300,
                   margin: 0
                 }}>
-                  After two years of rigorous audits, we achieve GMP certification — cementing our commitment to the highest global standards.
+                  Veadya strengthened its manufacturing and quality processes by working with facilities that follow defined GMP standards.
                 </p>
               </div>
             </div>
@@ -809,7 +817,7 @@ const About = () => {
                   display: 'block',
                   marginBottom: '8px'
                 }}>
-                  2021 · Digital
+                  2021 · Taking Veadya Online
                 </span>
                 <h3 style={{
                   fontFamily: '"Cormorant Garamond", serif',
@@ -819,7 +827,7 @@ const About = () => {
                   marginBottom: '12px',
                   lineHeight: '1.3'
                 }}>
-                  Digital & Reach
+                  Taking Veadya Online
                 </h3>
                 <p style={{
                   fontFamily: '"Jost", sans-serif',
@@ -829,7 +837,7 @@ const About = () => {
                   fontWeight: 300,
                   margin: 0
                 }}>
-                  Our online platform launches, bringing Ayurvedic ritual to every corner of India — and the first international orders arrive.
+                  Veadya expanded online, making its wellness products accessible to more customers across India.
                 </p>
               </div>
             </div>
@@ -901,7 +909,7 @@ const About = () => {
                   display: 'block',
                   marginBottom: '8px'
                 }}>
-                  2024 · Community
+                  2024 · Community Growth
                 </span>
                 <h3 style={{
                   fontFamily: '"Cormorant Garamond", serif',
@@ -911,7 +919,7 @@ const About = () => {
                   marginBottom: '12px',
                   lineHeight: '1.3'
                 }}>
-                  10,000+ Seekers
+                  A Growing Wellness Community
                 </h3>
                 <p style={{
                   fontFamily: '"Jost", sans-serif',
@@ -921,7 +929,7 @@ const About = () => {
                   fontWeight: 300,
                   margin: 0
                 }}>
-                  We celebrate a decade of botanical craft and 10,000+ lives transformed — with a landmark Dosha Assessment platform.
+                  Veadya continued to grow its wellness community while developing more accessible ways for customers to explore Ayurvedic products and guidance.
                 </p>
               </div>
             </div>

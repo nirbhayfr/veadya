@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 
 const SeasonalEdit = () => {
@@ -13,32 +12,32 @@ const SeasonalEdit = () => {
           {/* Left Content */}
           <div className="seasonal-content pr-8 relative z-10">
             <p className="text-[#9abcb9] text-[11px] uppercase tracking-[0.25em] font-medium mb-6 flex items-center gap-2">
-              <span className="text-sm">✦</span> SEASONAL EDIT
+              <span className="text-sm">✦</span> CURATED WELLNESS SETS
             </p>
             <h2 className="font-serif text-[56px] leading-[1.1] mb-6 font-normal tracking-wide">
-              Ritual Sets for <em className="italic font-light text-[#f3eed5]">Deep<br/>Healing</em>
+              Ayurvedic Wellness Sets for <em className="italic font-light text-[#f3eed5]">Everyday<br/>Care</em>
             </h2>
             <p className="text-[#9abcb9] text-[17px] font-light leading-relaxed mb-10 max-w-md">
-              Complete Ayurvedic routines — morning to night, inside and out. Curated for lasting transformation.
+              Explore thoughtfully selected Ayurvedic products that can be included in your morning and evening wellness routines.
             </p>
             
             <ul className="space-y-4 mb-12">
               <li className="flex items-center gap-4 text-[#9abcb9] text-[15px] font-light">
                 <div className="w-1.5 h-1.5 rounded-full bg-[#338e8b]"></div>
-                Formulated by Ayurvedic physicians
+                Developed with Ayurvedic Expertise
               </li>
               <li className="flex items-center gap-4 text-[#9abcb9] text-[15px] font-light">
                 <div className="w-1.5 h-1.5 rounded-full bg-[#338e8b]"></div>
-                Sourced from Himalayan herb gardens
+                Made with Carefully Selected Herbal Ingredients
               </li>
               <li className="flex items-center gap-4 text-[#9abcb9] text-[15px] font-light">
                 <div className="w-1.5 h-1.5 rounded-full bg-[#338e8b]"></div>
-                Results in 14 days of regular use
+                Designed for Consistent Everyday Use
               </li>
             </ul>
 
             <Link to="/shop" className="inline-flex items-center gap-3 bg-[#f3eed5] text-[var(--bg-deep)] px-7 py-3.5 rounded-md font-medium text-[11px] uppercase tracking-[0.2em] hover:bg-white transition-all hover:-translate-y-0.5 shadow-lg">
-              → SHOP RITUAL SETS
+              → EXPLORE WELLNESS SETS
             </Link>
           </div>
 

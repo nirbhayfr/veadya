@@ -71,7 +71,7 @@ export const SiteDataProvider = ({ children }) => {
         ? uniqueRecords(resolved.categories, category => category.slug || category.name).map(category => ({ ...category, image: resolveMediaUrl(category.image) }))
         : [],
       contentEntries: Array.isArray(resolved.contentEntries)
-        ? uniqueRecords(resolved.contentEntries, entry => `${entry.contentType?.slug}:${entry.data?.seedKey || JSON.stringify(entry.data)}`)
+        ? uniqueRecords(resolved.contentEntries, entry => `${entry.contentType?.slug}:${JSON.stringify(entry.data)}`)
           .filter(entry => entry.status === 'published')
           .map(entry => ({
             ...entry,
@@ -120,7 +120,7 @@ export const useHomepageSection = (sectionKey) => {
   const entries = useContentEntries('homepage-section');
   return useMemo(
     () => entries.find(entry =>
-      entry.data?.section === sectionKey || entry.data?.seedKey === sectionKey,
+      entry.data?.section === sectionKey,
     )?.data,
     [entries, sectionKey],
   );

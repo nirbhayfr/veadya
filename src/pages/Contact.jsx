@@ -1,12 +1,18 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../utils/api';
+import { useSiteData } from '../context/SiteDataContext';
 
 const Contact = () => {
+  const { settings } = useSiteData();
+  const contactPhone = settings.contactPhone || '+91 12345 67890';
+  const contactEmail = settings.contactEmail || 'hello@veadya.in';
+  const contactAddress = settings.address || 'Rishikesh, Uttarakhand, India';
+  const whatsappNumber = contactPhone.replace(/\D/g, '');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    subject: 'General Inquiry',
+    subject: 'General Question',
     message: ''
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -21,7 +27,7 @@ const Contact = () => {
       await api.post('/contact', formData);
       setLoading(false);
       setIsSubmitted(true);
-      setFormData({ name: '', email: '', subject: 'General Inquiry', message: '' });
+      setFormData({ name: '', email: '', subject: 'General Question', message: '' });
     } catch (err) {
       setError(err.message || 'Failed to submit query. Please try again.');
       setLoading(false);
@@ -53,17 +59,17 @@ const Contact = () => {
           {/* Eyebrow */}
           <p className="shop-hero-eyebrow">
             <i className="fa-solid fa-feather-pointed" />
-            Get In Touch · Connect
+            We’re Here to Help
           </p>
 
           {/* Heading */}
           <h1 className="shop-hero-title">
-            Connect <em>With Us</em>
+            How Can We <em>Help You?</em>
           </h1>
 
           {/* Subtitle */}
           <p className="shop-hero-subtitle">
-            Whether you seek personalized Ayurvedic guidance, order assistance, or wholesale partnerships, our wellness team welcomes your inquiries.
+            Whether you need help choosing a product, have a question about an order, or want to discuss a wholesale partnership, the Veadya team is ready to assist you.
           </p>
         </div>
       </section>
@@ -80,7 +86,7 @@ const Contact = () => {
             {/* ── Left Column: Contact Cards ── */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
 
-              {/* Apothecary Sanctuary Card */}
+              {/* Office and customer support card */}
               <div style={{
                 background: '#ffffff',
                 border: '1px solid rgba(1, 114, 110, 0.08)',
@@ -98,7 +104,7 @@ const Contact = () => {
                   display: 'block',
                   marginBottom: '16px'
                 }}>
-                  The Sanctuary
+                  Visit or Contact Veadya
                 </span>
                 <h3 style={{
                   fontFamily: '"Cormorant Garamond", serif',
@@ -108,7 +114,7 @@ const Contact = () => {
                   marginBottom: '16px',
                   lineHeight: '1.3'
                 }}>
-                  Ayurvedic Apothecary &amp; Showroom
+                  Veadya Office &amp; Customer Support
                 </h3>
                 <p style={{
                   fontFamily: '"Jost", sans-serif',
@@ -118,8 +124,7 @@ const Contact = () => {
                   fontWeight: 300,
                   marginBottom: '32px'
                 }}>
-                  102, Veadya House, Ganga Canal Road,<br />
-                  Rishikesh, Uttarakhand - 249201, India
+                  {contactAddress}
                 </p>
 
                 {/* Info List */}
@@ -139,8 +144,8 @@ const Contact = () => {
                       <i className="fa-solid fa-phone" style={{ fontSize: '14px' }} />
                     </div>
                     <div>
-                      <span style={{ fontFamily: '"Jost", sans-serif', fontSize: '9px', fontWeight: 600, color: 'var(--primary)', display: 'block', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Phone Support</span>
-                      <a href="tel:+911352439870" style={{ fontFamily: '"Jost", sans-serif', fontSize: '14px', fontWeight: 500, color: 'var(--text-dark)', textDecoration: 'none', transition: 'color 0.3s ease' }} className="contact-link-hover">+91 (135) 243-9870</a>
+                      <span style={{ fontFamily: '"Jost", sans-serif', fontSize: '9px', fontWeight: 600, color: 'var(--primary)', display: 'block', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Call Our Support Team</span>
+                      <a href={`tel:${contactPhone}`} style={{ fontFamily: '"Jost", sans-serif', fontSize: '14px', fontWeight: 500, color: 'var(--text-dark)', textDecoration: 'none', transition: 'color 0.3s ease' }} className="contact-link-hover">{contactPhone}</a>
                     </div>
                   </div>
 
@@ -159,8 +164,8 @@ const Contact = () => {
                       <i className="fa-solid fa-envelope" style={{ fontSize: '14px' }} />
                     </div>
                     <div>
-                      <span style={{ fontFamily: '"Jost", sans-serif', fontSize: '9px', fontWeight: 600, color: 'var(--primary)', display: 'block', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Email Inquiries</span>
-                      <a href="mailto:wisdom@veadya.com" style={{ fontFamily: '"Jost", sans-serif', fontSize: '14px', fontWeight: 500, color: 'var(--text-dark)', textDecoration: 'none', transition: 'color 0.3s ease' }} className="contact-link-hover">wisdom@veadya.com</a>
+                      <span style={{ fontFamily: '"Jost", sans-serif', fontSize: '9px', fontWeight: 600, color: 'var(--primary)', display: 'block', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Email Us</span>
+                      <a href={`mailto:${contactEmail}`} style={{ fontFamily: '"Jost", sans-serif', fontSize: '14px', fontWeight: 500, color: 'var(--text-dark)', textDecoration: 'none', transition: 'color 0.3s ease' }} className="contact-link-hover">{contactEmail}</a>
                     </div>
                   </div>
                 </div>
@@ -184,7 +189,7 @@ const Contact = () => {
                   display: 'block',
                   marginBottom: '16px'
                 }}>
-                  Ritual Advice
+                  Product Guidance
                 </span>
                 <h3 style={{
                   fontFamily: '"Cormorant Garamond", serif',
@@ -194,7 +199,7 @@ const Contact = () => {
                   marginBottom: '12px',
                   lineHeight: '1.3'
                 }}>
-                  Personalized Care Lines
+                  Talk to Our Support Team
                 </h3>
                 <p style={{
                   fontFamily: '"Jost", sans-serif',
@@ -204,11 +209,11 @@ const Contact = () => {
                   fontWeight: 300,
                   marginBottom: '28px'
                 }}>
-                  Our botanical advisors are active Monday to Saturday from 10:00 AM to 7:00 PM IST. Connect instantly over WhatsApp for bespoke skincare and herb selection.
+                  Our support team is available Monday to Saturday, from 10:00 AM to 7:00 PM IST, to help with product information, order-related questions, and general assistance.
                 </p>
 
                 <a
-                  href="https://wa.me/919876543210"
+                  href={`https://wa.me/${whatsappNumber}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn-primary"
@@ -219,7 +224,7 @@ const Contact = () => {
                   }}
                 >
                   <i className="fa-brands fa-whatsapp" style={{ fontSize: '14px' }} />
-                  Consult on WhatsApp
+                  Chat with Us on WhatsApp
                 </a>
               </div>
 
@@ -264,7 +269,7 @@ const Contact = () => {
                     color: 'var(--text-dark)',
                     marginBottom: '16px'
                   }}>
-                    Bespoke Query Transmitted
+                    Message Received
                   </h3>
                   <p style={{
                     fontFamily: '"Jost", sans-serif',
@@ -275,7 +280,7 @@ const Contact = () => {
                     maxWidth: '360px',
                     margin: '0 auto 28px'
                   }}>
-                    Thank you for connecting. An Ayurvedic concierge advisor will review your message and reply via email within 24 business hours.
+                    Thank you for contacting Veadya. Our team will review your message and respond as soon as possible.
                   </p>
                   <button
                     onClick={() => setIsSubmitted(false)}
@@ -321,7 +326,7 @@ const Contact = () => {
                     color: 'var(--text-dark)',
                     marginBottom: '8px'
                   }}>
-                    Send A Message
+                    Send Us a Message
                   </h3>
                   <p style={{
                     fontFamily: '"Jost", sans-serif',
@@ -330,7 +335,7 @@ const Contact = () => {
                     fontWeight: 300,
                     marginBottom: '36px'
                   }}>
-                    Bespoke formulations, order concerns, or media queries — we read every letter.
+                    Contact us for product information, order support, business enquiries, or media-related questions. Our team will respond as soon as possible.
                   </p>
 
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
@@ -345,7 +350,7 @@ const Contact = () => {
                         letterSpacing: '0.12em',
                         color: 'var(--primary)'
                       }}>
-                        Your Name
+                        Full Name
                       </label>
                       <input
                         type="text"
@@ -354,7 +359,7 @@ const Contact = () => {
                         value={formData.name}
                         onChange={handleChange}
                         required
-                        placeholder="Ananya Verma"
+                        placeholder="Enter Your Full Name"
                         className="contact-custom-input"
                         style={{
                           width: '100%',
@@ -380,7 +385,7 @@ const Contact = () => {
                         letterSpacing: '0.12em',
                         color: 'var(--primary)'
                       }}>
-                        Email Address
+                        Your Email Address
                       </label>
                       <input
                         type="email"
@@ -389,7 +394,7 @@ const Contact = () => {
                         value={formData.email}
                         onChange={handleChange}
                         required
-                        placeholder="ananya@example.com"
+                        placeholder="Enter Your Email Address"
                         className="contact-custom-input"
                         style={{
                           width: '100%',
@@ -415,7 +420,7 @@ const Contact = () => {
                         letterSpacing: '0.12em',
                         color: 'var(--primary)'
                       }}>
-                        Nature of Inquiry
+                        How Can We Help?
                       </label>
                       <select
                         id="subject"
@@ -436,10 +441,13 @@ const Contact = () => {
                           cursor: 'pointer'
                         }}
                       >
-                        <option value="General Inquiry">General Inquiry</option>
-                        <option value="Ritual Advice">Ritual Advice / Botanical Consultation</option>
-                        <option value="Order Status">Order Status &amp; Support</option>
-                        <option value="Wholesale Partnerships">Wholesale &amp; Retail Partnerships</option>
+                        <option value="General Question">General Question</option>
+                        <option value="Product Information">Product Information</option>
+                        <option value="Order Support">Order Support</option>
+                        <option value="Wholesale or Distribution">Wholesale or Distribution</option>
+                        <option value="Media or Collaboration">Media or Collaboration</option>
+                        <option value="Consultation Request">Consultation Request</option>
+                        <option value="Other">Other</option>
                       </select>
                     </div>
 
@@ -453,7 +461,7 @@ const Contact = () => {
                         letterSpacing: '0.12em',
                         color: 'var(--primary)'
                       }}>
-                        Your Message
+                        Tell Us More
                       </label>
                       <textarea
                         id="message"
@@ -461,7 +469,7 @@ const Contact = () => {
                         value={formData.message}
                         onChange={handleChange}
                         required
-                        placeholder="Write your wellness query or message here..."
+                        placeholder="Tell us how we can help, and include any relevant order or product details."
                         rows="5"
                         className="contact-custom-input"
                         style={{
@@ -494,12 +502,12 @@ const Contact = () => {
                         {loading ? (
                           <>
                             <i className="fa-solid fa-circle-notch fa-spin" />
-                            Transmitting...
+                            Sending...
                           </>
                         ) : (
                           <>
                             <i className="fa-regular fa-paper-plane" />
-                            Transmit Inquiry
+                            Send Message
                           </>
                         )}
                       </button>
@@ -514,7 +522,7 @@ const Contact = () => {
         </div>
       </section>
 
-      {/* ── Contact Promotion Banner (Connect With Us) ── */}
+      {/* ── Product Guidance Banner ── */}
       <section className="shop-connect-section" style={{ marginTop: '80px' }}>
         {/* Vertical standing divider line right in the middle */}
         <div className="shop-connect-gradient-overlay" />
@@ -524,7 +532,7 @@ const Contact = () => {
           <div className="shop-connect-img-col">
             <img
               src="/images/homebanner3.jfif"
-              alt="Ayurvedic Ritual Essentials"
+              alt="Veadya product guidance"
               className="shop-connect-img"
             />
             <div className="shop-connect-img-overlay" />
@@ -550,10 +558,10 @@ const Contact = () => {
             <div style={{ position: 'relative', zIndex: 3 }}>
               <p className="shop-connect-eyebrow">
                 <i className="fa-solid fa-feather-pointed" />
-                Ayurvedic Consultations
+                Personalised Product Guidance
               </p>
               <h2 className="shop-connect-title">
-                Schedule a Complimentary Virtual Consultation
+                Book a Complimentary Product Guidance Call
               </h2>
 
               {/* Premium Gold fading line ornament */}
@@ -565,12 +573,10 @@ const Contact = () => {
               }} />
 
               <p className="shop-connect-desc">
-                Unsure which botanical drops or serums suit your specific body type or current skin condition? Speak directly with our resident Ayurvedic doctor for a bespoke ritual diagnosis.
+                Not sure which Veadya product may fit your wellness routine? Book a short call with our team to understand the available options and receive general product guidance.
               </p>
               <a
-                href="https://calendly.com"
-                target="_blank"
-                rel="noopener noreferrer"
+                href={`mailto:${contactEmail}?subject=Product%20Guidance%20Call`}
                 className="btn-primary w-fit"
                 style={{
                   background: 'var(--bloom-pale)',
@@ -582,7 +588,7 @@ const Contact = () => {
                 }}
               >
                 <i className="fa-regular fa-calendar-check mr-2" />
-                Book 15-Min Session
+                Book a 15-Minute Call
               </a>
             </div>
           </div>
