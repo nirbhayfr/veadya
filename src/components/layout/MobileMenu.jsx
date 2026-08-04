@@ -12,7 +12,10 @@ const MobileMenu = () => {
   const { user, isAuthenticated } = useSelector((state) => state.auth);
   const [shopOpen, setShopOpen] = useState(false);
   const { settings, menus, categories } = useSiteData();
-  const navLinks = menus.mobile.map(item => ({ label: item.label, path: item.url }));
+  const mobileMenuLinks = menus.mobile.map(item => ({ label: item.label, path: item.url }));
+  const navLinks = mobileMenuLinks.some(link => link.path === '/assessment')
+    ? mobileMenuLinks
+    : [...mobileMenuLinks, { label: 'Find My Match', path: '/assessment' }];
   const shopCategories = categories.filter(category => category.status !== 'inactive').map(category => ({
     label: category.name,
     path: `/shop?category=${encodeURIComponent(category.name)}`,
