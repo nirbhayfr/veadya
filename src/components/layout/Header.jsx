@@ -154,6 +154,16 @@ const Header = () => {
 										</Link>
 									</li>
 								))}
+								{!menus.header.some((item) => item.url === "/assessment") && (
+									<li>
+										<Link
+											to="/assessment"
+											className={`nav-link ${location.pathname === "/assessment" ? "nav-active" : ""}`}
+										>
+											Find My Match
+										</Link>
+									</li>
+								)}
 								{isAuthenticated && user?.role === "admin" && (
 									<li><Link to="/admin" className="nav-link">Admin Panel</Link></li>
 								)}
@@ -162,6 +172,14 @@ const Header = () => {
 					)}
 					<nav className={menus.header.length ? "hidden" : "main-nav hidden lg:block"}>
 						<ul className="nav-list">
+							<li>
+								<Link
+									to="/assessment"
+									className={`nav-link ${location.pathname === "/assessment" ? "nav-active" : ""}`}
+								>
+									Find My Match
+								</Link>
+							</li>
 							<li>
 								<Link
 									to="/"

@@ -12,6 +12,7 @@ import ForgotPassword from "./pages/auth/ForgotPassword";
 import CommerceComingSoon from "./pages/CommerceComingSoon";
 import Contact from "./pages/Contact";
 import ProductDetails from "./pages/ProductDetails";
+import Assessment from "./pages/Assessment";
 import AdminPanel from "./pages/AdminPanel";
 import { CmsPage, Journal, JournalPost } from "./pages/CmsPage";
 
@@ -62,6 +63,7 @@ function App() {
 						subColor: p.subColor,
 						rating: p.ratingAverage,
 						reviews: p.ratingCount,
+						tags: p.tags || [],
 					}));
 					dispatch(setProducts(normalized));
 				}
@@ -100,6 +102,7 @@ function App() {
 				<Route path="/cart" element={<CommerceComingSoon />} />
 				<Route path="/checkout" element={<CommerceComingSoon />} />
 				<Route path="/product/:id" element={<ProductDetails />} />
+				<Route path="/assessment" element={<Assessment />} />
 				<Route path="/login" element={<LoginPage />} />
 				<Route path="/register" element={<RegisterPage />} />
 				<Route
