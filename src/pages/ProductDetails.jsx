@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import ProductCard from '../components/shop/ProductCard';
+import { addToCart } from '../store/slices/cartSlice';
+import { toggleCart } from '../store/slices/uiSlice';
 
 // Comprehensive botanical profile mapping for each product to make details feel ultra-premium
 const BOTANICAL_PROFILES = {
@@ -100,9 +102,14 @@ const BOTANICAL_PROFILES = {
 const ProductDetails = () => {
   const { id } = useParams();
   const products = useSelector((state) => state.products.items);
-  
+  const dispatch = useDispatch();
+
   // Find current product
   const product = products.find((p) => String(p.id) === String(id) || String(p._id) === String(id)) || products[0];
+
+  const handleNotifyMe = () => {
+    window.dispatchEvent(new Event('open-notify-modal'));
+  };
 
   // States
   const [quantity, setQuantity] = useState(1);
@@ -486,23 +493,19 @@ const ProductDetails = () => {
                   </button>
                 </div>
 
-                {/* Primary Add to Bag / Checkout CTA */}
                 <button
-                  disabled
-                  aria-label="Coming soon"
-                  className="btn-primary"
+                  onClick={handleNotifyMe}
+                  className="btn-primary cursor-pointer"
                   style={{
                     flex: 1,
                     height: '56px',
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'center',
-                    cursor: 'not-allowed',
-                    opacity: 0.75
+                    justifyContent: 'center'
                   }}
                 >
-                  <i className="fa-regular fa-clock" style={{ fontSize: '14px' }} />
-                  Coming Soon
+                  <i className="fa-regular fa-bell" style={{ fontSize: '14px', marginRight: '8px' }} />
+                  Notify Me
                 </button>
 
               </div>

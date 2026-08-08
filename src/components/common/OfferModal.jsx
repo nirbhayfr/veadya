@@ -10,6 +10,14 @@ const OfferModal = () => {
   const offer = banners.popup[0];
 
   useEffect(() => {
+    const handleOpenNotify = () => {
+      setIsOpen(true);
+    };
+    window.addEventListener('open-notify-modal', handleOpenNotify);
+    return () => window.removeEventListener('open-notify-modal', handleOpenNotify);
+  }, []);
+
+  useEffect(() => {
     // Show modal after 1.5 seconds if it hasn't been shown in this session
     const hasShown = sessionStorage.getItem('veadya_offer_shown');
     if (!loading && offer && !hasShown) {

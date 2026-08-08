@@ -10,6 +10,8 @@ import LoginPage from "./pages/auth/LoginPage";
 import RegisterPage from "./pages/auth/RegisterPage";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import CommerceComingSoon from "./pages/CommerceComingSoon";
+import Cart from "./pages/Cart";
+import Checkout from "./pages/Checkout";
 import Contact from "./pages/Contact";
 import ProductDetails from "./pages/ProductDetails";
 import Assessment from "./pages/Assessment";

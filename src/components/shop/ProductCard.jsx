@@ -1,7 +1,18 @@
 import { Link } from 'react-router-dom';
 import { withImageFallback } from '../../utils/mediaUrl';
+import { useDispatch } from 'react-redux';
+import { addToCart } from '../../store/slices/cartSlice';
+import { toggleCart } from '../../store/slices/uiSlice';
 
 const ProductCard = ({ product, isDark = false }) => {
+  const dispatch = useDispatch();
+
+  const handleNotifyMe = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    window.dispatchEvent(new Event('open-notify-modal'));
+  };
+
   if (isDark) {
     return (
       <div className="group cursor-pointer flex flex-col w-full h-full bg-white/[0.02] hover:bg-white/[0.06] transition-all duration-500 backdrop-blur-[1px] relative">
@@ -35,17 +46,18 @@ const ProductCard = ({ product, isDark = false }) => {
             <p className="text-[#f3eed5] font-semibold text-[13px] tracking-wide">
               ₹ {product.price}
             </p>
-			<Link
-				to="/contact"
-				aria-label={`Notify me when ${product.name} is available`}
-              className="bg-white/5 backdrop-blur-sm border border-white/20 text-white px-4 py-2 text-[9px] uppercase tracking-[0.15em] hover:bg-white hover:text-[var(--bg-deep)] transition-all font-medium rounded-sm cursor-pointer disabled:opacity-60 disabled:cursor-default"
+            <button
+              onClick={handleNotifyMe}
+              aria-label={`Notify me about ${product.name}`}
+              className="bg-white/5 backdrop-blur-sm border border-white/20 text-white px-4 py-2 text-[9px] uppercase tracking-[0.15em] hover:bg-white hover:text-[var(--bg-deep)] transition-all font-medium rounded-sm cursor-pointer flex items-center gap-1.5"
               style={{
                 whiteSpace: 'nowrap',
                 flexShrink: 0
               }}
             >
-				Notify Me
-			</Link>
+              <i className="fa-regular fa-bell text-[11px]" />
+              Notify Me
+            </button>
           </div>
         </div>
       </div>
@@ -82,10 +94,10 @@ const ProductCard = ({ product, isDark = false }) => {
         <div className="prod-card-footer">
           <span className="prod-card-price">₹{product.price}</span>
 
-			<Link
-				to="/contact"
-            className="prod-card-add-text"
-				aria-label={`Notify me when ${product.name} is available`}
+          <button
+            onClick={handleNotifyMe}
+            className="prod-card-add-text animate-hover"
+            aria-label={`Notify me about ${product.name}`}
             style={{
               padding: '10px 16px',
               fontSize: '10px',
@@ -105,8 +117,9 @@ const ProductCard = ({ product, isDark = false }) => {
               flexShrink: 0
             }}
           >
-				Notify Me
-			</Link>
+            <i className="fa-regular fa-bell" style={{ fontSize: '11px' }} />
+            Notify Me
+          </button>
         </div>
       </div>
     </div>

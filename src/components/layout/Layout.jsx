@@ -4,6 +4,7 @@ import Footer from './Footer';
 import CartDrawer from '../common/CartDrawer';
 import MobileMenu from './MobileMenu';
 import SearchOverlay from '../common/SearchOverlay';
+import ChatbotWidget from '../common/ChatbotWidget';
 
 const Layout = ({ children }) => {
   const location = useLocation();
@@ -22,6 +23,7 @@ const Layout = ({ children }) => {
       {!hideStoreShell && <CartDrawer />}
       {!hideStoreShell && <MobileMenu />}
       {!hideStoreShell && <SearchOverlay />}
+      {!hideStoreShell && <ChatbotWidget />}
     </div>
   );
 };
