@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/immutability, react-hooks/exhaustive-deps */
-import { useState, useEffect } from "react";
+import { Fragment, useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { api } from "../utils/api";
@@ -26,6 +26,12 @@ import {
 	Check,
 	AlertCircle,
 	Sparkles,
+	ChevronDown,
+	Search,
+	MapPin,
+	Phone,
+	CreditCard,
+	Clock3,
 } from "lucide-react";
 
 const platformTabs = [
@@ -76,6 +82,9 @@ const AdminPanel = () => {
 	const [categoriesList, setCategoriesList] = useState([]);
 	const [messagesList, setMessagesList] = useState([]);
 	const [ordersList, setOrdersList] = useState([]);
+	const [expandedOrderId, setExpandedOrderId] = useState(null);
+	const [orderSearch, setOrderSearch] = useState("");
+	const [orderStatusFilter, setOrderStatusFilter] = useState("all");
 	const [loading, setLoading] = useState(false);
 	const [actionLoading, setActionLoading] = useState(false);
 	const [successMsg, setSuccessMsg] = useState("");
@@ -443,6 +452,38 @@ const AdminPanel = () => {
 			`${order.user?.firstName || ""} ${order.user?.lastName || ""}`.trim();
 		return userName || order.shippingAddress?.name || "Guest customer";
 	};
+
+	const formatOrderDate = (value) =>
+		value
+			? new Date(value).toLocaleString("en-IN", {
+				dateStyle: "medium",
+				timeStyle: "short",
+			})
+			: "Not available";
+
+	const formatCurrency = (value) =>
+		`₹${Number(value || 0).toLocaleString("en-IN")}`;
+
+	const filteredOrders = ordersList.filter((order) => {
+		const query = orderSearch.trim().toLowerCase();
+		const matchesStatus =
+			orderStatusFilter === "all" || order.orderStatus === orderStatusFilter;
+		const searchable = [
+			order._id,
+			getOrderCustomerName(order),
+			order.user?.email,
+			order.shippingAddress?.email,
+			order.shippingAddress?.phone,
+			order.contactEmail,
+			order.contactPhone,
+			...(order.items || []).map((item) => item.title),
+		]
+			.filter(Boolean)
+			.join(" ")
+			.toLowerCase();
+
+		return matchesStatus && (!query || searchable.includes(query));
+	});
 
 	const getStatusBadgeClass = (status) => {
 		const classes = {
@@ -1419,14 +1460,41 @@ const AdminPanel = () => {
 
 					{/* ── ORDERS TAB ── */}
 					{activeTab === "orders" && (
-						<div className="bg-white border border-gray-100 rounded-3xl overflow-hidden shadow-xs">
+						<div className="space-y-5">
+							<div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+								{[
+									["Total orders", ordersList.length],
+									["Needs action", ordersList.filter((order) => ["pending", "confirmed", "processing"].includes(order.orderStatus)).length],
+									["Awaiting payment", ordersList.filter((order) => order.paymentStatus === "pending").length],
+									["Order value", formatCurrency(ordersList.reduce((sum, order) => sum + Number(order.totalAmount || 0), 0))],
+								].map(([label, value]) => (
+									<div key={label} className="bg-white border border-gray-100 rounded-lg px-5 py-4 shadow-xs">
+										<p className="text-[10px] uppercase tracking-widest text-gray-400 font-semibold">{label}</p>
+										<p className="mt-2 text-2xl font-serif text-[#114232]">{value}</p>
+									</div>
+								))}
+							</div>
+
+							<div className="bg-white border border-gray-100 rounded-lg p-4 flex flex-col md:flex-row gap-3 md:items-center">
+								<label className="relative flex-1">
+									<Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+									<input value={orderSearch} onChange={(event) => setOrderSearch(event.target.value)} placeholder="Search order, customer, phone, email or product" className="w-full border border-gray-200 rounded-lg pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#114232]/15" />
+								</label>
+								<select value={orderStatusFilter} onChange={(event) => setOrderStatusFilter(event.target.value)} className="border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#114232]/15">
+									<option value="all">All statuses</option>
+									{["pending", "confirmed", "processing", "shipped", "delivered", "cancelled"].map((status) => <option key={status} value={status}>{status[0].toUpperCase() + status.slice(1)}</option>)}
+								</select>
+								<p className="text-xs text-gray-400 whitespace-nowrap">{filteredOrders.length} shown</p>
+							</div>
+
+						<div className="bg-white border border-gray-100 rounded-lg overflow-hidden shadow-xs">
 							{loading ? (
 								<div className="p-12 text-center text-gray-400 text-sm">
 									Loading customer orders...
 								</div>
-							) : ordersList.length === 0 ? (
+							) : filteredOrders.length === 0 ? (
 								<div className="p-12 text-center text-gray-400 text-sm">
-									No orders have been placed yet.
+									{ordersList.length ? "No orders match those filters." : "No orders have been placed yet."}
 								</div>
 							) : (
 								<div className="overflow-x-auto">
@@ -1454,8 +1522,9 @@ const AdminPanel = () => {
 											</tr>
 										</thead>
 										<tbody className="divide-y divide-gray-100 text-sm text-gray-700">
-											{ordersList.map(
+											{filteredOrders.map(
 												(order) => (
+													<Fragment key={order._id}>
 													<tr
 														key={
 															order._id
@@ -1472,20 +1541,10 @@ const AdminPanel = () => {
 																	.toUpperCase()}
 															</p>
 															<p className="text-[11px] text-gray-400 mt-1">
-																{new Date(
-																	order.createdAt,
-																).toLocaleString(
-																	"en-IN",
-																)}
+																{formatOrderDate(order.createdAt)}
 															</p>
 															<p className="font-semibold text-[#114232] mt-2">
-																₹
-																{Number(
-																	order.totalAmount ||
-																		0,
-																).toLocaleString(
-																	"en-IN",
-																)}
+																{formatCurrency(order.totalAmount)}
 															</p>
 														</td>
 														<td className="py-4 px-6">
@@ -1601,6 +1660,9 @@ const AdminPanel = () => {
 														</td>
 														<td className="py-4 px-6 text-right">
 															<div className="flex justify-end gap-1.5">
+																<button onClick={() => setExpandedOrderId(expandedOrderId === order._id ? null : order._id)} className="p-2 hover:bg-gray-100 text-gray-500 rounded-lg transition-colors" title={expandedOrderId === order._id ? "Hide details" : "View order details"} aria-expanded={expandedOrderId === order._id}>
+																	<ChevronDown size={17} className={`transition-transform ${expandedOrderId === order._id ? "rotate-180" : ""}`} />
+																</button>
 																{order.paymentStatus !==
 																	"paid" && (
 																	<button
@@ -1639,12 +1701,41 @@ const AdminPanel = () => {
 															</div>
 														</td>
 													</tr>
+													{expandedOrderId === order._id && (
+														<tr className="bg-gray-50/70">
+															<td colSpan="6" className="px-6 py-6">
+																<div className="grid xl:grid-cols-[1.4fr_1fr_1fr] gap-6">
+																	<section>
+																		<h4 className="text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-3">Items ordered</h4>
+																		<div className="space-y-3">{(order.items || []).map((item, index) => (
+																			<div key={`${order._id}-detail-${index}`} className="flex items-center gap-3 bg-white border border-gray-100 rounded-lg p-3">
+																				{item.image ? <img src={item.image} alt="" className="w-12 h-12 rounded-md object-cover bg-gray-50" /> : <div className="w-12 h-12 rounded-md bg-gray-100 flex items-center justify-center"><Package size={18} className="text-gray-400" /></div>}
+																				<div className="min-w-0 flex-1"><p className="font-semibold text-gray-800 truncate">{item.title}</p><p className="text-xs text-gray-400">{formatCurrency(item.price)} × {item.quantity}</p></div>
+																				<strong className="text-sm text-gray-800">{formatCurrency(Number(item.price) * Number(item.quantity))}</strong>
+																			</div>
+																		))}</div>
+																		<div className="mt-4 ml-auto max-w-xs space-y-2 text-sm"><div className="flex justify-between text-gray-500"><span>Subtotal</span><span>{formatCurrency(order.subTotal)}</span></div><div className="flex justify-between text-gray-500"><span>Shipping</span><span>{formatCurrency(order.shippingCharge)}</span></div><div className="flex justify-between border-t border-gray-200 pt-2 font-bold text-gray-900"><span>Total</span><span>{formatCurrency(order.totalAmount)}</span></div></div>
+																	</section>
+																	<section className="space-y-5">
+																		<div><h4 className="text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2 flex items-center gap-2"><MapPin size={13} /> Delivery address</h4><p className="font-semibold text-gray-800">{order.shippingAddress?.name || getOrderCustomerName(order)}</p><p className="text-sm text-gray-500 leading-6">{[order.shippingAddress?.addressLine1, order.shippingAddress?.addressLine2, order.shippingAddress?.city, order.shippingAddress?.state, order.shippingAddress?.pinCode, order.shippingAddress?.country].filter(Boolean).join(", ") || "No delivery address recorded"}</p></div>
+																		<div><h4 className="text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2 flex items-center gap-2"><Phone size={13} /> Contact</h4><p className="text-sm text-gray-600">{order.contactPhone || order.shippingAddress?.phone || order.user?.phone || "No phone"}</p><p className="text-sm text-gray-600 break-all">{order.contactEmail || order.shippingAddress?.email || order.user?.email || "No email"}</p></div>
+																	</section>
+																	<section className="space-y-5">
+																		<div><h4 className="text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2 flex items-center gap-2"><CreditCard size={13} /> Payment</h4><p className="text-sm text-gray-600 capitalize">{order.paymentMethod} · {order.paymentStatus}</p>{order.razorpayOrderId && <p className="text-xs text-gray-400 mt-1 break-all">Order ref: {order.razorpayOrderId}</p>}{order.razorpayPaymentId && <p className="text-xs text-gray-400 mt-1 break-all">Payment ref: {order.razorpayPaymentId}</p>}{order.paidAt && <p className="text-xs text-gray-400 mt-1">Paid {formatOrderDate(order.paidAt)}</p>}</div>
+																		<div><h4 className="text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2 flex items-center gap-2"><Clock3 size={13} /> Fulfillment</h4><div className="space-y-1 text-xs text-gray-500"><p>Placed: {formatOrderDate(order.createdAt)}</p>{order.shippedAt && <p>Shipped: {formatOrderDate(order.shippedAt)}</p>}{order.deliveredAt && <p>Delivered: {formatOrderDate(order.deliveredAt)}</p>}<p>Notifications: {order.notifications?.length || 0}</p></div></div>
+																	</section>
+																</div>
+															</td>
+														</tr>
+													)}
+													</Fragment>
 												),
 											)}
 										</tbody>
 									</table>
 								</div>
 							)}
+						</div>
 						</div>
 					)}
 
