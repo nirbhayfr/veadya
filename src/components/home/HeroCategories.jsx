@@ -30,7 +30,7 @@ const heroProblems = [
 	{
 		id: 5,
 		name: "Ayurveda & Wellness",
-		img: "/ayurveda.png",
+		img: "/skin.png",
 		link: "/shop?problem=Ayurveda+Wellness",
 	},
 	{
