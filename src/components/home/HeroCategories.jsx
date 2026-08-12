@@ -29,9 +29,9 @@ const heroProblems = [
 	},
 	{
 		id: 5,
-		name: "Skin Health & Wellness",
-		img: "/skin.png",
-		link: "/shop?problem=Skin+Wellness",
+		name: "Ayurveda & Wellness",
+		img: "/ayurveda.png",
+		link: "/shop?problem=Ayurveda+Wellness",
 	},
 	{
 		id: 6,
@@ -51,10 +51,13 @@ const HeroCategories = () => {
 						<i className="fa-solid fa-leaf section-eyebrow-icon"></i>
 						Explore by Wellness Need
 					</p>
-					<h2 className="section-title">Find Support for Your Wellness Goals</h2>
+					<h2 className="section-title">
+						Find Support for Your Wellness Goals
+					</h2>
 					<p className="section-desc">
-						Choose a wellness goal to explore Ayurvedic juices,
-						capsules, and herbal drops suited to your everyday routine.
+						Choose a wellness goal to explore Ayurvedic
+						juices, capsules, and herbal drops suited to your
+						everyday routine.
 					</p>
 				</div>
 
