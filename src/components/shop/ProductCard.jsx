@@ -7,10 +7,11 @@ import { toggleCart } from '../../store/slices/uiSlice';
 const ProductCard = ({ product, isDark = false }) => {
   const dispatch = useDispatch();
 
-  const handleNotifyMe = (e) => {
+  const handleAddToCart = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    window.dispatchEvent(new Event('open-notify-modal'));
+    dispatch(addToCart(product));
+    dispatch(toggleCart());
   };
 
   if (isDark) {
@@ -47,16 +48,16 @@ const ProductCard = ({ product, isDark = false }) => {
               ₹ {product.price}
             </p>
             <button
-              onClick={handleNotifyMe}
-              aria-label={`Notify me about ${product.name}`}
+              onClick={handleAddToCart}
+              aria-label={`Add ${product.name} to cart`}
               className="bg-white/5 backdrop-blur-sm border border-white/20 text-white px-4 py-2 text-[9px] uppercase tracking-[0.15em] hover:bg-white hover:text-[var(--bg-deep)] transition-all font-medium rounded-sm cursor-pointer flex items-center gap-1.5"
               style={{
                 whiteSpace: 'nowrap',
                 flexShrink: 0
               }}
             >
-              <i className="fa-regular fa-bell text-[11px]" />
-              Notify Me
+              <i className="fa-solid fa-bag-shopping text-[11px]" />
+              Add to Cart
             </button>
           </div>
         </div>
@@ -95,9 +96,9 @@ const ProductCard = ({ product, isDark = false }) => {
           <span className="prod-card-price">₹{product.price}</span>
 
           <button
-            onClick={handleNotifyMe}
+            onClick={handleAddToCart}
             className="prod-card-add-text animate-hover"
-            aria-label={`Notify me about ${product.name}`}
+            aria-label={`Add ${product.name} to cart`}
             style={{
               padding: '10px 16px',
               fontSize: '10px',
@@ -117,8 +118,8 @@ const ProductCard = ({ product, isDark = false }) => {
               flexShrink: 0
             }}
           >
-            <i className="fa-regular fa-bell" style={{ fontSize: '11px' }} />
-            Notify Me
+            <i className="fa-solid fa-bag-shopping" style={{ fontSize: '11px' }} />
+            Add to Cart
           </button>
         </div>
       </div>

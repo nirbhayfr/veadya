@@ -46,6 +46,11 @@ const AdminAutomation = () => {
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [testing, setTesting] = useState(false);
+  const [testRecipient, setTestRecipient] = useState('');
+  const [testEvent, setTestEvent] = useState('order_placed');
+  const [liveTest, setLiveTest] = useState(false);
+  const [testResult, setTestResult] = useState(null);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
@@ -91,6 +96,26 @@ const AdminAutomation = () => {
       setError(err.message || 'Failed to save automation settings.');
     } finally {
       setSaving(false);
+    }
+  };
+
+  const runTest = async () => {
+    try {
+      setTesting(true);
+      setError('');
+      setMessage('');
+      setTestResult(null);
+      const response = await api.post('/automation/test', {
+        recipient: testRecipient,
+        event: testEvent,
+        live: liveTest,
+      });
+      setTestResult(response);
+      setMessage(response.message);
+    } catch (err) {
+      setError(err.message || 'WhatsApp automation test failed.');
+    } finally {
+      setTesting(false);
     }
   };
 
@@ -199,6 +224,48 @@ const AdminAutomation = () => {
         )}
       </div>
 
+      <div className="bg-white border border-gray-100 rounded-3xl p-6 shadow-sm">
+        <div className="flex flex-wrap items-start justify-between gap-4 mb-5">
+          <div>
+            <h4 className="font-serif text-lg text-gray-800">Test order notification</h4>
+            <p className="text-xs text-gray-400 mt-1">
+              Preview the Meta payload safely, or explicitly enable a live test send.
+            </p>
+          </div>
+          <span className={`px-3 py-1.5 rounded-full border text-[10px] uppercase font-semibold ${liveTest ? 'bg-red-50 text-red-700 border-red-200' : 'bg-blue-50 text-blue-700 border-blue-200'}`}>
+            {liveTest ? 'Live send' : 'Dry run'}
+          </span>
+        </div>
+        <div className="grid md:grid-cols-2 gap-4">
+          <input
+            className={inputClass}
+            value={testRecipient}
+            onChange={(event) => setTestRecipient(event.target.value)}
+            placeholder="WhatsApp number, e.g. 919876543210"
+          />
+          <select className={inputClass} value={testEvent} onChange={(event) => setTestEvent(event.target.value)}>
+            {Object.entries(eventLabels).map(([key, label]) => <option key={key} value={key}>{label}</option>)}
+          </select>
+        </div>
+        <label className="flex items-center gap-3 mt-4 text-sm text-gray-600">
+          <input type="checkbox" checked={liveTest} onChange={(event) => setLiveTest(event.target.checked)} />
+          Send a real template message through Meta (may incur charges)
+        </label>
+        <button
+          type="button"
+          onClick={runTest}
+          disabled={testing || !testRecipient.trim()}
+          className="mt-5 bg-[#114232] text-[#efdbbb] px-5 py-3 rounded-xl text-xs uppercase tracking-widest font-semibold disabled:opacity-50"
+        >
+          {testing ? 'Testing…' : liveTest ? 'Send live test' : 'Preview payload'}
+        </button>
+        {testResult?.payload && (
+          <pre className="mt-5 p-4 rounded-xl bg-gray-950 text-emerald-300 text-xs overflow-x-auto whitespace-pre-wrap">
+            {JSON.stringify(testResult, null, 2)}
+          </pre>
+        )}
+      </div>
+
       <div className="grid xl:grid-cols-2 gap-5">
         {Object.entries(events).map(([eventKey, event]) => (
           <div
@@ -257,10 +324,10 @@ const AdminAutomation = () => {
                         .filter(Boolean),
                     })
                   }
-                  placeholder="orderId, amount, storeName"
+                  placeholder="customerName, itemNames"
                 />
                 <p className="text-[10px] text-gray-400">
-                  Supported values: orderId, amount, storeName, statusLink
+                  Supported values: customerName, itemNames, orderId, amount, storeName, statusLink
                 </p>
               </div>
             </div>

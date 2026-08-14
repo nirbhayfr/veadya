@@ -107,8 +107,9 @@ const ProductDetails = () => {
   // Find current product
   const product = products.find((p) => String(p.id) === String(id) || String(p._id) === String(id)) || products[0];
 
-  const handleNotifyMe = () => {
-    window.dispatchEvent(new Event('open-notify-modal'));
+  const handleAddToCart = () => {
+    dispatch(addToCart({ ...product, quantity }));
+    dispatch(toggleCart());
   };
 
   // States
@@ -494,7 +495,7 @@ const ProductDetails = () => {
                 </div>
 
                 <button
-                  onClick={handleNotifyMe}
+                  onClick={handleAddToCart}
                   className="btn-primary cursor-pointer"
                   style={{
                     flex: 1,
@@ -504,8 +505,8 @@ const ProductDetails = () => {
                     justifyContent: 'center'
                   }}
                 >
-                  <i className="fa-regular fa-bell" style={{ fontSize: '14px', marginRight: '8px' }} />
-                  Notify Me
+                  <i className="fa-solid fa-bag-shopping" style={{ fontSize: '14px', marginRight: '8px' }} />
+                  Add to Cart
                 </button>
 
               </div>

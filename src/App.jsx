@@ -9,7 +9,6 @@ import About from "./pages/About";
 import LoginPage from "./pages/auth/LoginPage";
 import RegisterPage from "./pages/auth/RegisterPage";
 import ForgotPassword from "./pages/auth/ForgotPassword";
-import CommerceComingSoon from "./pages/CommerceComingSoon";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import Contact from "./pages/Contact";
@@ -101,8 +100,8 @@ function App() {
 				<Route path="/shop" element={<Shop />} />
 				<Route path="/about" element={<About />} />
 				<Route path="/contact" element={<Contact />} />
-				<Route path="/cart" element={<CommerceComingSoon />} />
-				<Route path="/checkout" element={<CommerceComingSoon />} />
+				<Route path="/cart" element={<Cart />} />
+				<Route path="/checkout" element={<Checkout />} />
 				<Route path="/product/:id" element={<ProductDetails />} />
 				<Route path="/assessment" element={<Assessment />} />
 				<Route path="/login" element={<LoginPage />} />
