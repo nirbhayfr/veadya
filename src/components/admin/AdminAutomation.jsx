@@ -330,7 +330,7 @@ const AdminAutomation = () => {
                 />
                 <p className="text-[10px] text-gray-400">
 				  {eventKey === 'order_placed'
-				    ? 'Fixed by the approved veadya_order_placed template.'
+				    ? 'Fixed by the approved order_placed template.'
 				    : 'Supported values: customerName, itemNames, orderId, amount, storeName, statusLink'}
                 </p>
               </div>
