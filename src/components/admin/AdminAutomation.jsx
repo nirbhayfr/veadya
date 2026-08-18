@@ -303,6 +303,7 @@ const AdminAutomation = () => {
                 <input
                   className={inputClass}
                   value={event.templateName}
+				  disabled={eventKey === 'order_placed'}
                   onChange={(e) =>
                     updateEvent(eventKey, { templateName: e.target.value })
                   }
@@ -324,10 +325,13 @@ const AdminAutomation = () => {
                         .filter(Boolean),
                     })
                   }
-                  placeholder="customerName, itemNames"
+				  disabled={eventKey === 'order_placed'}
+				  placeholder="customerName, orderId, amount, itemCount, deliveryAddress"
                 />
                 <p className="text-[10px] text-gray-400">
-                  Supported values: customerName, itemNames, orderId, amount, storeName, statusLink
+				  {eventKey === 'order_placed'
+				    ? 'Fixed by the approved veadya_order_placed template.'
+				    : 'Supported values: customerName, itemNames, orderId, amount, storeName, statusLink'}
                 </p>
               </div>
             </div>

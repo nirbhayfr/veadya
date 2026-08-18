@@ -11,6 +11,7 @@ import RegisterPage from "./pages/auth/RegisterPage";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
+import Orders from "./pages/Orders";
 import Contact from "./pages/Contact";
 import ProductDetails from "./pages/ProductDetails";
 import Assessment from "./pages/Assessment";
@@ -102,6 +103,7 @@ function App() {
 				<Route path="/contact" element={<Contact />} />
 				<Route path="/cart" element={<Cart />} />
 				<Route path="/checkout" element={<Checkout />} />
+				<Route path="/orders" element={<Orders />} />
 				<Route path="/product/:id" element={<ProductDetails />} />
 				<Route path="/assessment" element={<Assessment />} />
 				<Route path="/login" element={<LoginPage />} />
