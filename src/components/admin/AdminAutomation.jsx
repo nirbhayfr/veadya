@@ -303,7 +303,7 @@ const AdminAutomation = () => {
                 <input
                   className={inputClass}
                   value={event.templateName}
-				  disabled={eventKey === 'order_placed'}
+                  disabled
                   onChange={(e) =>
                     updateEvent(eventKey, { templateName: e.target.value })
                   }
@@ -325,13 +325,11 @@ const AdminAutomation = () => {
                         .filter(Boolean),
                     })
                   }
-				  disabled={eventKey === 'order_placed'}
-				  placeholder="customerName, orderId, amount, itemCount, deliveryAddress"
+                  disabled
+                  placeholder="customerName, orderId, amount, itemCount"
                 />
                 <p className="text-[10px] text-gray-400">
-				  {eventKey === 'order_placed'
-				    ? 'Fixed by the approved order_placed template.'
-				    : 'Supported values: customerName, itemNames, orderId, amount, storeName, statusLink'}
+                  Fixed by the approved {eventKey} template.
                 </p>
               </div>
             </div>
